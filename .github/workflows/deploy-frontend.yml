@@ -21,7 +21,7 @@ jobs:
 
       - name: Build image
         run: |
-          docker build \
+          docker build --no-cache \
             -t n0jiri/bizships-frontend:latest \
             -f ./frontend/Dockerfile.production \
             ./frontend
