@@ -1,14 +1,17 @@
-async function bootstrap() {
-  const { default: app } = await import("./app");
+import dotenv from "dotenv";
+import app from "./app";
 
-  const port = process.env.PORT || 4000;
+dotenv.config();
+const port = process.env.PORT || 3000;
+const startServer = async () => {
+  try {
+    app.listen(port, () => {
+      console.log(`Server running on port ${port}`);
+    });
+  } catch (error) {
+    console.error("Error initializing server:", error);
+    process.exit(1);
+  }
+};
 
-  app.listen(port, () => {
-    console.log(`API running on port ${port}`);
-  });
-}
-
-bootstrap().catch((err) => {
-  console.error("Fatal error:", err);
-  process.exit(1);
-});
+startServer();
