@@ -1,0 +1,6 @@
+resources:
+  - backend-deployment.yml
+  - backend-service.yml
+  - frontend-deployment.yml
+  - frontend-service.yml
+  - ingress.yml

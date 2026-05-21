@@ -1,0 +1,7 @@
+namespace: staging
+
+resources:
+  - ../../base
+
+patches:
+  - path: ingress-patch.yml
