@@ -5,3 +5,12 @@ resources:
 
 patches:
   - path: ingress-patch.yml
+
+images:
+  - name: backend-image
+    newName: n0jiri/bizships-backend-staging
+    newTag: latest
+
+  - name: frontend-image
+    newName: n0jiri/bizships-frontend-staging
+    newTag: latest

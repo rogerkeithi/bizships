@@ -20,7 +20,7 @@ spec:
       containers:
         - name: backend
 
-          image: n0jiri/bizships-backend:latest
+          image: backend-image
 
           imagePullPolicy: Always
 

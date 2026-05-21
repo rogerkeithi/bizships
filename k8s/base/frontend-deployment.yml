@@ -20,7 +20,7 @@ spec:
       containers:
         - name: frontend
 
-          image: n0jiri/bizships-frontend:latest
+          image: frontend-image
 
           imagePullPolicy: Always
 
