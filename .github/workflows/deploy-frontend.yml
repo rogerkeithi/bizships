@@ -32,7 +32,7 @@ jobs:
         run: |
           docker build --no-cache \
             -t $IMAGE_NAME:latest \
-            -f ./frontend/Dockerfile.production \
+            -f ./frontend/Dockerfile \
             ./frontend
 
       - name: Push image
