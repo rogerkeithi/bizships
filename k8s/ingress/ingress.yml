@@ -9,7 +9,7 @@ spec:
   ingressClassName: traefik
 
   rules:
-    - host: app.local
+    - host: app.bizships.com.br
       http:
         paths:
           - path: /
@@ -21,7 +21,7 @@ spec:
                 port:
                   number: 80
 
-    - host: api.local
+    - host: api.bizships.com.br
       http:
         paths:
           - path: /
