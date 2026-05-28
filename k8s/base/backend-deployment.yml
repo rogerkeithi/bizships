@@ -24,5 +24,21 @@ spec:
 
           imagePullPolicy: Always
 
+          env:
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: NODE_ENV
+
+            - name: PORT
+              value: "4000"
+
+            - name: MONGO_URI
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: MONGO_URI
+
           ports:
             - containerPort: 4000
