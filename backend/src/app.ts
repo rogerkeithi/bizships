@@ -1,15 +1,14 @@
 import "reflect-metadata";
 import express from "express";
 import cors from "cors";
-import swaggerJsdoc from "swagger-jsdoc";
 import swaggerUi from "swagger-ui-express";
-import swaggerOptions from "./config/swagger";
 import cookieParser from "cookie-parser";
+import { errorHandler } from "./shared/middlewares/error-handler";
+import { openApiDocument } from "./docs/open-api";
 
 const app = express();
-const swaggerSpec = swaggerJsdoc(swaggerOptions);
+app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(
   cors({
     origin: true,
@@ -18,5 +17,7 @@ app.use(
 );
 app.use(express.json());
 app.use(cookieParser());
+
+app.use(errorHandler);
 
 export default app;
