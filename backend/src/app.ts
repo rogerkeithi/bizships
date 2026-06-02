@@ -8,6 +8,13 @@ import { openApiDocument } from "./docs/open-api";
 import userRoute from "./interfaces/http/routers/user.route";
 
 const app = express();
+
+console.log(JSON.stringify(openApiDocument.paths, null, 2));
+
+console.log(
+  JSON.stringify(openApiDocument.paths?.["/users/by-email"], null, 2),
+);
+
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument));
 
 app.use(
