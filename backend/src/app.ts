@@ -5,7 +5,7 @@ import swaggerUi from "swagger-ui-express";
 import cookieParser from "cookie-parser";
 import { errorHandler } from "./shared/middlewares/error-handler";
 import { openApiDocument } from "./docs/open-api";
-import userRoute from "./interfaces/http/routers/create-user.route";
+import userRoute from "./interfaces/http/routers/user.route";
 
 const app = express();
 app.use("/docs", swaggerUi.serve, swaggerUi.setup(openApiDocument));

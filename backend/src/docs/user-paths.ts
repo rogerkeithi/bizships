@@ -1,4 +1,5 @@
 import { CreateUserSchema } from "@src/application/user/use-cases/create-user/create-user.req.dto";
+import { FindUserByEmailSchema } from "@src/application/user/use-cases/find-user-by-email/find-user-by-email.req.dto";
 
 export const userPaths = {
   "/users": {
@@ -26,6 +27,29 @@ export const userPaths = {
 
         "409": {
           description: "User already exists",
+        },
+      },
+    },
+  },
+
+  "/users/by-email": {
+    get: {
+      tags: ["Users"],
+      summary: "Find user by email",
+
+      requestParams: {
+        query: FindUserByEmailSchema,
+      },
+
+      responses: {
+        "200": {
+          description: "User found",
+        },
+        "400": {
+          description: "Validation error",
+        },
+        "404": {
+          description: "User not found",
         },
       },
     },
