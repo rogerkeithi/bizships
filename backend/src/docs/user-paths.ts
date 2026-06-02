@@ -37,9 +37,17 @@ export const userPaths = {
       tags: ["Users"],
       summary: "Find user by email",
 
-      requestParams: {
-        query: FindUserByEmailSchema,
-      },
+      parameters: [
+        {
+          name: "email",
+          in: "query",
+          required: true,
+          schema: {
+            type: "string",
+            format: "email",
+          },
+        },
+      ],
 
       responses: {
         "200": {
