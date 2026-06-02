@@ -40,7 +40,7 @@ export const userPaths = {
       parameters: [
         {
           name: "email",
-          in: "query",
+          in: "query" as const,
           required: true,
           schema: {
             type: "string",
