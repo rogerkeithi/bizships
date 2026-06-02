@@ -1,7 +1,8 @@
 import { CreateUserSchema } from "@src/application/user/use-cases/create-user/create-user.req.dto";
 import { FindUserByEmailSchema } from "@src/application/user/use-cases/find-user-by-email/find-user-by-email.req.dto";
+import { ZodOpenApiPathsObject } from "zod-openapi";
 
-export const userPaths = {
+export const userPaths: ZodOpenApiPathsObject = {
   "/users": {
     post: {
       tags: ["Users"],
@@ -37,17 +38,9 @@ export const userPaths = {
       tags: ["Users"],
       summary: "Find user by email",
 
-      parameters: [
-        {
-          name: "email",
-          in: "query" as const,
-          required: true,
-          schema: {
-            type: "string",
-            format: "email",
-          },
-        },
-      ],
+      requestParams: {
+        query: FindUserByEmailSchema,
+      },
 
       responses: {
         "200": {
