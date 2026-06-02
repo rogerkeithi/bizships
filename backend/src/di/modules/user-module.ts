@@ -20,9 +20,4 @@ export function registerUserModule(container: Container) {
   //Controllers
   container.bind<CreateUserController>(CreateUserController).toSelf();
   container.bind<FindUserByEmailController>(FindUserByEmailController).toSelf();
-
-  //Services
-  container
-    .bind<IPasswordHasher>(TYPES.IPasswordHasher)
-    .to(Argon2PasswordHasher);
 }

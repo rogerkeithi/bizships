@@ -1,7 +1,9 @@
 import argon2 from "argon2";
 import { IPasswordHasher } from "./password-hasher.interface";
 import { PasswordHash } from "@src/domain/user/value-objects/PasswordHash";
+import { injectable } from "inversify";
 
+@injectable()
 export class Argon2PasswordHasher implements IPasswordHasher {
   async hash(password: string): Promise<PasswordHash> {
     const hash = await argon2.hash(password);
