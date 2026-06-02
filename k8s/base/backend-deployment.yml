@@ -52,5 +52,16 @@ spec:
                   name: backend-secret
                   key: APP_URL
 
+            - name: DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: DOMAIN
+
+            - name: PROJECT_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: PROJECT_NAME
           ports:
             - containerPort: 4000
