@@ -12,7 +12,7 @@ export default class FindUserByEmailController {
   ) {}
 
   async execute(req: Request, res: Response): Promise<Response> {
-    const dto = FindUserByEmailSchema.parse(req.body);
+    const dto = FindUserByEmailSchema.parse(req.query);
 
     const response = await this.findUserByEmailUseCase.execute(dto);
 
