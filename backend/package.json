@@ -23,6 +23,7 @@
     "jsonwebtoken": "^9.0.2",
     "libphonenumber-js": "^1.13.4",
     "mongoose": "^9.6.3",
+    "resend": "^6.12.4",
     "swagger-ui-express": "^5.0.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3",
