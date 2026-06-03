@@ -1,8 +1,8 @@
 import { container } from "@src/di/container";
 import express from "express";
 import { asyncHandler } from "@src/shared/utils/async-handler";
-import CreateUserController from "../controllers/create-user.controller";
-import FindUserByEmailController from "../controllers/find-user-by-email.controller";
+import CreateUserController from "../controllers/user/create-user.controller";
+import FindUserByEmailController from "../controllers/user/find-user-by-email.controller";
 
 const userRoute = express.Router();
 

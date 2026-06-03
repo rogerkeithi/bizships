@@ -10,8 +10,8 @@ export class ResendEmailService implements IEmailService {
     private resend: Resend,
   ) {}
 
-  async sendConfirmationEmail(email: string, token: string) {
-    const confirmUrl = `${process.env.APP_URL}/confirm-email?token=${token}`;
+  async sendConfirmationEmail(email: string, tokenId: string) {
+    const confirmUrl = `https://${process.env.APP_URL}/confirm-email?tokenId=${tokenId}`;
     const domain = `${process.env.DOMAIN}`;
     const projectName = `${process.env.PROJECT_NAME}`;
 

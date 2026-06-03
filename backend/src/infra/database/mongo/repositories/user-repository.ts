@@ -10,13 +10,13 @@ export class UserRepository implements IUserRepository {
     await UserModel.create(UserPersistenceMapper.toPersistence(user));
   }
 
-  async findByEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<User | undefined> {
     const user = await UserModel.findOne({
       email,
     }).lean();
 
     if (!user) {
-      return null;
+      return undefined;
     }
 
     return UserPersistenceMapper.toDomain(user);
