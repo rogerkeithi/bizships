@@ -22,5 +22,7 @@ export class ResendConfirmUserUseCase {
     @inject(JwtService)
     private jwtService: JwtService,
   ) {}
-  async execute(data: ResendConfirmUserReq): Promise<void> {}
+  async execute(data: ResendConfirmUserReq): Promise<void> {
+    //teste
+  }
 }
