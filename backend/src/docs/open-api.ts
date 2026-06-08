@@ -6,7 +6,7 @@ export const openApiDocument = createDocument({
 
   info: {
     title: "Bizships",
-    version: "1.0.0",
+    version: "1.0.1",
   },
 
   paths: {

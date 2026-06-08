@@ -58,7 +58,7 @@ export const userPaths: ZodOpenApiPathsObject = {
     },
   },
 
-  "/confirm-user": {
+  "/users/confirm-user": {
     post: {
       tags: ["Users"],
       summary: "Confirm user",
