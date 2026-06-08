@@ -1,5 +1,7 @@
+import { ConfirmUserSchema } from "@src/application/user/use-cases/confirm-user/confirm-user.req.dto";
 import { CreateUserSchema } from "@src/application/user/use-cases/create-user/create-user.req.dto";
 import { FindUserByEmailSchema } from "@src/application/user/use-cases/find-user-by-email/find-user-by-email.req.dto";
+import { SetupPasswordSchema } from "@src/application/user/use-cases/setup-password/setup-password.req.dto";
 import { ZodOpenApiPathsObject } from "zod-openapi";
 
 export const userPaths: ZodOpenApiPathsObject = {
@@ -51,6 +53,66 @@ export const userPaths: ZodOpenApiPathsObject = {
         },
         "404": {
           description: "User not found",
+        },
+      },
+    },
+  },
+
+  "/confirm-user": {
+    post: {
+      tags: ["Users"],
+      summary: "Confirm user",
+
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: ConfirmUserSchema,
+          },
+        },
+      },
+
+      responses: {
+        "200": {
+          description: "User confirmed",
+        },
+
+        "400": {
+          description: "Validation error",
+        },
+
+        "403": {
+          description: "User already confirmed",
+        },
+      },
+    },
+  },
+
+  "/setup-password": {
+    post: {
+      tags: ["Users"],
+      summary: "Setup password",
+
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: SetupPasswordSchema,
+          },
+        },
+      },
+
+      responses: {
+        "200": {
+          description: "Password setted",
+        },
+
+        "400": {
+          description: "Validation error",
+        },
+
+        "403": {
+          description: "User already confirmed",
         },
       },
     },

@@ -29,6 +29,13 @@ export class ConfirmUserTokenRepository implements IConfirmUserTokenRepository {
     return ConfirmUserTokenPersistenceMapper.toDomain(confirmUserToken);
   }
 
+  async confirm(tokenId: string): Promise<void> {
+    await ConfirmUserTokenModel.updateOne(
+      { tokenId },
+      { $set: { confirmed: true } },
+    );
+  }
+
   async delete(tokenId: string): Promise<void> {
     await ConfirmUserTokenModel.deleteOne({ tokenId });
   }

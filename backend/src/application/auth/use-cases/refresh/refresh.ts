@@ -16,13 +16,15 @@ export class RefreshUseCase {
     private jwtService: JwtService,
   ) {}
   async execute(data: RefreshReq): Promise<RefreshRes> {
-    const payload = await this.jwtService.verifyRefreshToken(data.refreshToken);
+    const payload = this.jwtService.verifyRefreshToken(data.refreshToken);
 
     if (payload.type !== "refresh") {
       throw new InvalidTokenError();
     }
 
-    const stored = await this.refreshTokenRepository.findByTokenId(payload.jti);
+    const stored = await this.refreshTokenRepository.findByTokenId(
+      payload.jti!,
+    );
 
     if (!stored || stored.revoked) {
       throw new InvalidTokenError();

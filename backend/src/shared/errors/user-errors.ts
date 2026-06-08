@@ -21,6 +21,11 @@ export class InvalidTokenError extends AppError {
     super(ErrorCode.INVALID_TOKEN, 400);
   }
 }
+export class ExpiredTokenError extends AppError {
+  constructor() {
+    super(ErrorCode.EXPIRED_TOKEN, 400);
+  }
+}
 export class UserNotFoundError extends AppError {
   constructor() {
     super(ErrorCode.USER_NOT_FOUND, 404);
@@ -34,6 +39,16 @@ export class UserDeactivatedError extends AppError {
 export class UserNotConfirmedError extends AppError {
   constructor() {
     super(ErrorCode.USER_NOT_CONFIRMED, 400);
+  }
+}
+export class UserAlreadyConfirmedError extends AppError {
+  constructor() {
+    super(ErrorCode.USER_ALREADY_CONFIRMED, 400);
+  }
+}
+export class UserMissingPasswordError extends AppError {
+  constructor() {
+    super(ErrorCode.USER_MISSING_PASSWORD, 400);
   }
 }
 export class UserAlreadyExistsError extends AppError {

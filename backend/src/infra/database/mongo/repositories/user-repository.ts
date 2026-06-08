@@ -10,9 +10,32 @@ export class UserRepository implements IUserRepository {
     await UserModel.create(UserPersistenceMapper.toPersistence(user));
   }
 
+  async update(user: User): Promise<void> {
+    await UserModel.updateOne(
+      {
+        userId: user.userId,
+      },
+      {
+        $set: UserPersistenceMapper.toPersistence(user),
+      },
+    );
+  }
+
   async findByEmail(email: string): Promise<User | undefined> {
     const user = await UserModel.findOne({
       email,
+    }).lean();
+
+    if (!user) {
+      return undefined;
+    }
+
+    return UserPersistenceMapper.toDomain(user);
+  }
+
+  async findById(userId: string): Promise<User | undefined> {
+    const user = await UserModel.findOne({
+      userId,
     }).lean();
 
     if (!user) {

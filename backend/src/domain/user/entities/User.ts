@@ -62,6 +62,10 @@ export class User {
     return new User(props);
   }
 
+  public setPassword(passwordHash: PasswordHash) {
+    this._passwordHash = passwordHash;
+  }
+
   get email(): Email {
     return this._email;
   }

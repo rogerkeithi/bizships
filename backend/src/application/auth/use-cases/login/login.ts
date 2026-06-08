@@ -9,6 +9,7 @@ import { IPasswordHasher } from "@src/services/password-hasher/password-hasher.i
 import {
   IncorrectCredentialsError,
   UserDeactivatedError,
+  UserMissingPasswordError,
   UserNotConfirmedError,
   UserNotFoundError,
 } from "@src/shared/errors/user-errors";
@@ -37,6 +38,10 @@ export class LoginUseCase {
 
     if (!user.isConfirmed) {
       throw new UserNotConfirmedError();
+    }
+
+    if (!user.passwordHash) {
+      throw new UserMissingPasswordError();
     }
 
     if (!user.status) {

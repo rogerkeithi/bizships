@@ -14,8 +14,8 @@ export class LogoutUseCase {
     private jwtService: JwtService,
   ) {}
   async execute(data: LogoutReq): Promise<void> {
-    const payload = await this.jwtService.verifyRefreshToken(data.refreshToken);
+    const payload = this.jwtService.verifyRefreshToken(data.refreshToken);
 
-    await this.refreshTokenRepository.revoke(payload.jti);
+    await this.refreshTokenRepository.revoke(payload.jti!);
   }
 }
