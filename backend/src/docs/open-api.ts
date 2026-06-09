@@ -1,5 +1,6 @@
 import { createDocument } from "zod-openapi";
 import { userPaths } from "./user-paths";
+import { authPaths } from "./auth-paths";
 
 export const openApiDocument = createDocument({
   openapi: "3.1.0",
@@ -11,5 +12,6 @@ export const openApiDocument = createDocument({
 
   paths: {
     ...userPaths,
+    ...authPaths,
   },
 });

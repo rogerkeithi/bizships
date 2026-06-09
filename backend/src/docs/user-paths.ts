@@ -88,7 +88,7 @@ export const userPaths: ZodOpenApiPathsObject = {
     },
   },
 
-  "/setup-password": {
+  "/users/setup-password": {
     post: {
       tags: ["Users"],
       summary: "Setup password",

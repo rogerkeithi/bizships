@@ -5,6 +5,10 @@ import { RefreshTokenRepository } from "@src/infra/database/mongo/repositories/r
 import { LoginUseCase } from "@src/application/auth/use-cases/login/login";
 import LoginController from "@src/interfaces/http/controllers/auth/login.controller";
 import { JwtService } from "@src/services/jwt/jwt.service";
+import { LogoutUseCase } from "@src/application/auth/use-cases/logout/logout";
+import { RefreshUseCase } from "@src/application/auth/use-cases/refresh/refresh";
+import LogoutController from "@src/interfaces/http/controllers/auth/logout.controller";
+import RefreshController from "@src/interfaces/http/controllers/auth/refresh.controller";
 
 export function registerAuthModule(container: Container) {
   //Repositories
@@ -17,7 +21,11 @@ export function registerAuthModule(container: Container) {
 
   //Use Cases
   container.bind<LoginUseCase>(LoginUseCase).toSelf();
+  container.bind<LogoutUseCase>(LogoutUseCase).toSelf();
+  container.bind<RefreshUseCase>(RefreshUseCase).toSelf();
 
   //Controllers
   container.bind<LoginController>(LoginController).toSelf();
+  container.bind<LogoutController>(LogoutController).toSelf();
+  container.bind<RefreshController>(RefreshController).toSelf();
 }

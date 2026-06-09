@@ -24,11 +24,11 @@ userRoute.get(
   asyncHandler(controllers.findByEmail.execute.bind(controllers.findByEmail)),
 );
 userRoute.post(
-  "/confirm-user",
+  "/users/confirm-user",
   asyncHandler(controllers.confirmUser.execute.bind(controllers.confirmUser)),
 );
 userRoute.post(
-  "/setup-password",
+  "/users/setup-password",
   asyncHandler(
     controllers.setupPassword.execute.bind(controllers.setupPassword),
   ),
