@@ -1,7 +1,10 @@
 import { ConfirmUserSchema } from "@src/application/user/use-cases/confirm-user/confirm-user.req.dto";
 import { CreateUserSchema } from "@src/application/user/use-cases/create-user/create-user.req.dto";
 import { FindUserByEmailSchema } from "@src/application/user/use-cases/find-user-by-email/find-user-by-email.req.dto";
+import { ResendConfirmUserSchema } from "@src/application/user/use-cases/resend-confirm-user/resend-confirm-user.req.dto";
+import { SendSetupPasswordCodeSchema } from "@src/application/user/use-cases/send-setup-password-code/send-setup-password-code.req.dto";
 import { SetupPasswordSchema } from "@src/application/user/use-cases/setup-password/setup-password.req.dto";
+import { VerifySetupPasswordCodeSchema } from "@src/application/user/use-cases/verify-setup-password-code/verify-setup-password-code.req.dto";
 import { ZodOpenApiPathsObject } from "zod-openapi";
 
 export const userPaths: ZodOpenApiPathsObject = {
@@ -113,6 +116,96 @@ export const userPaths: ZodOpenApiPathsObject = {
 
         "403": {
           description: "User already confirmed",
+        },
+      },
+    },
+  },
+
+  "/users/resend-confirm": {
+    post: {
+      tags: ["Users"],
+      summary: "Resend confirmation user",
+
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: ResendConfirmUserSchema,
+          },
+        },
+      },
+
+      responses: {
+        "200": {
+          description: "Confirmation re-sent",
+        },
+
+        "400": {
+          description: "Validation error",
+        },
+
+        "403": {
+          description: "User already confirmed",
+        },
+      },
+    },
+  },
+
+  "/users/verify-setup-password-code": {
+    post: {
+      tags: ["Users"],
+      summary: "Verify setup password code",
+
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: VerifySetupPasswordCodeSchema,
+          },
+        },
+      },
+
+      responses: {
+        "200": {
+          description: "Code successfully verified",
+        },
+
+        "400": {
+          description: "Validation error",
+        },
+
+        "404": {
+          description: "User not found",
+        },
+      },
+    },
+  },
+
+  "/users/send-setup-password-code": {
+    post: {
+      tags: ["Users"],
+      summary: "Send setup password code",
+
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: SendSetupPasswordCodeSchema,
+          },
+        },
+      },
+
+      responses: {
+        "200": {
+          description: "Setup password code sent",
+        },
+
+        "400": {
+          description: "Validation error",
+        },
+
+        "404": {
+          description: "User not found",
         },
       },
     },

@@ -26,6 +26,21 @@ export class ExpiredTokenError extends AppError {
     super(ErrorCode.EXPIRED_TOKEN, 400);
   }
 }
+export class CodeNotFoundError extends AppError {
+  constructor() {
+    super(ErrorCode.CODE_NOT_FOUND, 404);
+  }
+}
+export class InvalidCodeError extends AppError {
+  constructor() {
+    super(ErrorCode.INVALID_CODE, 400);
+  }
+}
+export class ExpiredCodeError extends AppError {
+  constructor() {
+    super(ErrorCode.EXPIRED_CODE, 400);
+  }
+}
 export class UserNotFoundError extends AppError {
   constructor() {
     super(ErrorCode.USER_NOT_FOUND, 404);
@@ -79,5 +94,10 @@ export class InvalidPasswordHashError extends AppError {
 export class InvalidCountryError extends AppError {
   constructor() {
     super(ErrorCode.INVALID_COUNTRY, 400);
+  }
+}
+export class UserAlreadySetPassword extends AppError {
+  constructor() {
+    super(ErrorCode.USER_ALREADY_SET_PASSWORD, 400);
   }
 }

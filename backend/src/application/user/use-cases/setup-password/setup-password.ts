@@ -2,7 +2,10 @@
 import { inject, injectable } from "inversify";
 import { TYPES } from "@src/di/types";
 import { IUserRepository } from "@src/domain/user/repositories/use-repository.interface";
-import { UserNotFoundError } from "@src/shared/errors/user-errors";
+import {
+  UserNotConfirmedError,
+  UserNotFoundError,
+} from "@src/shared/errors/user-errors";
 import { IAuditRepository } from "@src/domain/audit/repositories/audit-repository.interface";
 import { AuditAction } from "@src/shared/enums/audit-action";
 import { Entity } from "@src/shared/enums/entity";
@@ -30,6 +33,10 @@ export class SetupPasswordUseCase {
 
     if (!user) {
       throw new UserNotFoundError();
+    }
+
+    if (!user.isConfirmed) {
+      throw new UserNotConfirmedError();
     }
 
     const passwordHash = await this.passwordHasher.hash(data.password);

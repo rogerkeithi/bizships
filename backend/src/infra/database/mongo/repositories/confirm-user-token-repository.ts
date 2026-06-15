@@ -29,11 +29,25 @@ export class ConfirmUserTokenRepository implements IConfirmUserTokenRepository {
     return ConfirmUserTokenPersistenceMapper.toDomain(confirmUserToken);
   }
 
+  async findByUserId(userId: string): Promise<ConfirmUserToken | undefined> {
+    const confirmUserToken = await ConfirmUserTokenModel.findOne({
+      userId,
+    }).lean();
+
+    return confirmUserToken
+      ? ConfirmUserTokenPersistenceMapper.toDomain(confirmUserToken)
+      : undefined;
+  }
+
   async confirm(tokenId: string): Promise<void> {
     await ConfirmUserTokenModel.updateOne(
       { tokenId },
       { $set: { confirmed: true } },
     );
+  }
+
+  async updateExpiresAt(tokenId: string, expiresAt: Date): Promise<void> {
+    await ConfirmUserTokenModel.updateOne({ tokenId }, { $set: expiresAt });
   }
 
   async delete(tokenId: string): Promise<void> {

@@ -5,6 +5,9 @@ import CreateUserController from "../controllers/user/create-user.controller";
 import FindUserByEmailController from "../controllers/user/find-user-by-email.controller";
 import SetupPasswordController from "../controllers/user/setup-password.controller";
 import ConfirmUserController from "../controllers/user/confirm-user.controller";
+import ResendConfirmUserController from "../controllers/user/resend-confirm-user.controller";
+import VerifySetupPasswordCodeController from "../controllers/user/verify-setup-password-code.controller";
+import SendSetupPasswordCodeController from "../controllers/user/send-setup-password-code.controller";
 
 const userRoute = express.Router();
 
@@ -13,6 +16,9 @@ const controllers = {
   findByEmail: container.get(FindUserByEmailController),
   confirmUser: container.get(ConfirmUserController),
   setupPassword: container.get(SetupPasswordController),
+  resendConfirmUser: container.get(ResendConfirmUserController),
+  verifySetupPasswordCode: container.get(VerifySetupPasswordCodeController),
+  sendSetupPasswordCode: container.get(SendSetupPasswordCodeController),
 };
 
 userRoute.post(
@@ -31,6 +37,28 @@ userRoute.post(
   "/users/setup-password",
   asyncHandler(
     controllers.setupPassword.execute.bind(controllers.setupPassword),
+  ),
+);
+userRoute.post(
+  "/users/resend-confirm",
+  asyncHandler(
+    controllers.resendConfirmUser.execute.bind(controllers.resendConfirmUser),
+  ),
+);
+userRoute.post(
+  "/users/verify-setup-password-code",
+  asyncHandler(
+    controllers.verifySetupPasswordCode.execute.bind(
+      controllers.verifySetupPasswordCode,
+    ),
+  ),
+);
+userRoute.post(
+  "/users/send-setup-password-code",
+  asyncHandler(
+    controllers.sendSetupPasswordCode.execute.bind(
+      controllers.sendSetupPasswordCode,
+    ),
   ),
 );
 export default userRoute;

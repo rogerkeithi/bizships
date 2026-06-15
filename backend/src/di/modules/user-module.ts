@@ -12,6 +12,14 @@ import { ConfirmUserUseCase } from "@src/application/user/use-cases/confirm-user
 import { SetupPasswordUseCase } from "@src/application/user/use-cases/setup-password/setup-password";
 import ConfirmUserController from "@src/interfaces/http/controllers/user/confirm-user.controller";
 import SetupPasswordController from "@src/interfaces/http/controllers/user/setup-password.controller";
+import { ICodeRepository } from "@src/domain/code/repositories/code-repository.interface";
+import { CodeRepository } from "@src/infra/database/mongo/repositories/code-repository";
+import { ResendConfirmUserUseCase } from "@src/application/user/use-cases/resend-confirm-user/resend-confirm-user";
+import { VerifySetupPasswordCodeUseCase } from "@src/application/user/use-cases/verify-setup-password-code/verify-setup-password-code";
+import { SendSetupPasswordCodeUseCase } from "@src/application/user/use-cases/send-setup-password-code/send-setup-password-code";
+import ResendConfirmUserController from "@src/interfaces/http/controllers/user/resend-confirm-user.controller";
+import VerifySetupPasswordCodeController from "@src/interfaces/http/controllers/user/verify-setup-password-code.controller";
+import SendSetupPasswordCodeController from "@src/interfaces/http/controllers/user/send-setup-password-code.controller";
 
 export function registerUserModule(container: Container) {
   //Repositories
@@ -19,16 +27,33 @@ export function registerUserModule(container: Container) {
   container
     .bind<IConfirmUserTokenRepository>(TYPES.IConfirmUserTokenRepository)
     .to(ConfirmUserTokenRepository);
+  container.bind<ICodeRepository>(TYPES.ICodeRepository).to(CodeRepository);
 
   //Use Cases
   container.bind<CreateUserUseCase>(CreateUserUseCase).toSelf();
   container.bind<FindUserByEmailUseCase>(FindUserByEmailUseCase).toSelf();
   container.bind<ConfirmUserUseCase>(ConfirmUserUseCase).toSelf();
   container.bind<SetupPasswordUseCase>(SetupPasswordUseCase).toSelf();
+  container.bind<ResendConfirmUserUseCase>(ResendConfirmUserUseCase).toSelf();
+  container
+    .bind<VerifySetupPasswordCodeUseCase>(VerifySetupPasswordCodeUseCase)
+    .toSelf();
+  container
+    .bind<SendSetupPasswordCodeUseCase>(SendSetupPasswordCodeUseCase)
+    .toSelf();
 
   //Controllers
   container.bind<CreateUserController>(CreateUserController).toSelf();
   container.bind<FindUserByEmailController>(FindUserByEmailController).toSelf();
   container.bind<ConfirmUserController>(ConfirmUserController).toSelf();
   container.bind<SetupPasswordController>(SetupPasswordController).toSelf();
+  container
+    .bind<ResendConfirmUserController>(ResendConfirmUserController)
+    .toSelf();
+  container
+    .bind<VerifySetupPasswordCodeController>(VerifySetupPasswordCodeController)
+    .toSelf();
+  container
+    .bind<SendSetupPasswordCodeController>(SendSetupPasswordCodeController)
+    .toSelf();
 }
