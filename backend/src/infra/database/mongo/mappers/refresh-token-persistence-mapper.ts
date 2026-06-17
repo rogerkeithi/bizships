@@ -3,7 +3,7 @@ import { RefreshToken } from "@src/domain/token/entities/RefreshToken";
 export class RefreshTokenPersistenceMapper {
   static toDomain(raw: RefreshTokenPersistenceDto): RefreshToken {
     return {
-      tokenId: raw.userId,
+      tokenId: raw.tokenId,
       userId: raw.userId,
       revoked: raw.revoked,
       expiresAt: raw.expiresAt,
