@@ -47,7 +47,14 @@ export class ConfirmUserTokenRepository implements IConfirmUserTokenRepository {
   }
 
   async updateExpiresAt(tokenId: string, expiresAt: Date): Promise<void> {
-    await ConfirmUserTokenModel.updateOne({ tokenId }, { $set: expiresAt });
+    await ConfirmUserTokenModel.updateOne(
+      { tokenId },
+      {
+        $set: {
+          expiresAt,
+        },
+      },
+    );
   }
 
   async delete(tokenId: string): Promise<void> {
