@@ -68,6 +68,10 @@ export class User {
     this._passwordHash = passwordHash;
   }
 
+  public setConfirmed() {
+    this._isConfirmed = true;
+  }
+
   public finishRegistration(data: {
     firstName: string;
     lastName: string;

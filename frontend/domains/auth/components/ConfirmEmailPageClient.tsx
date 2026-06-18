@@ -249,7 +249,11 @@ export function ConfirmEmailPageClient() {
         description="Informe seu e-mail para receber um novo link de confirmacao."
       >
         <form onSubmit={sendConfirmAgain} className="space-y-4">
-          <EmailField email={email} setEmail={setEmail} disabled={isSubmitting} />
+          <EmailField
+            email={email}
+            setEmail={setEmail}
+            disabled={isSubmitting}
+          />
           <Feedback message={message} />
           <SubmitButton loading={isSubmitting}>Reenviar link</SubmitButton>
         </form>
@@ -264,7 +268,11 @@ export function ConfirmEmailPageClient() {
         description="Informe seu e-mail para receber um codigo de 6 numeros e gerar um novo token."
       >
         <form onSubmit={sendCode} className="space-y-4">
-          <EmailField email={email} setEmail={setEmail} disabled={isSubmitting} />
+          <EmailField
+            email={email}
+            setEmail={setEmail}
+            disabled={isSubmitting}
+          />
           <Feedback message={message} />
           <SubmitButton loading={isSubmitting}>Enviar codigo</SubmitButton>
         </form>
@@ -335,8 +343,8 @@ export function ConfirmEmailPageClient() {
   if (step === "success") {
     return (
       <AuthCard
-        title="Conta pronta"
-        description="Sua senha foi definida com sucesso. Agora voce ja pode entrar."
+        title="Registro finalizado 🎉"
+        description="Sua senha foi definida com sucesso. Agora voce ja pode entrar"
       >
         <Button
           type="button"
@@ -355,7 +363,10 @@ export function ConfirmEmailPageClient() {
         title="E-mail ja confirmado"
         description="Esta conta ja foi confirmada. Entre com sua senha para continuar."
       >
-        <Link href="/login" className="block text-center text-xs font-black text-primary">
+        <Link
+          href="/login"
+          className="block text-center text-xs font-black text-primary"
+        >
           Ir para login
         </Link>
       </AuthCard>
@@ -367,7 +378,10 @@ export function ConfirmEmailPageClient() {
       title="Link invalido"
       description="Nao foi possivel validar este link. Solicite um novo acesso ou tente novamente."
     >
-      <Link href="/signup" className="block text-center text-xs font-black text-primary">
+      <Link
+        href="/signup"
+        className="block text-center text-xs font-black text-primary"
+      >
         Voltar ao cadastro
       </Link>
     </AuthCard>

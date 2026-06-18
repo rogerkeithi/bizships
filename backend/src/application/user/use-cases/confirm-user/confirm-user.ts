@@ -29,12 +29,6 @@ export class ConfirmUserUseCase {
     private jwtService: JwtService,
   ) {}
   async execute(data: ConfirmUserReq): Promise<ConfirmUserRes> {
-    //Caso o usuario ja tenha confirmado, o front verifica se existe o token de setup.
-    // - Caso exista e seja valido, vai pra definição de senha.
-    // - Caso exista e tenha expirado, vai pra uma tela de confirmação de codigo e envia por email
-    //Casos de quando nao houver o token de setup
-    // - Caso UserMissingPasswordError, tanto aqui quanto no login quanto no cadastro
-    // - Vai pra tela de confirmação, se confirmar codigo, gera o token novamente, front salva e usa pra gerar senha
     const token = await this.confirmUserTokenRepository.findByTokenId(
       data.tokenId,
     );
@@ -47,13 +41,12 @@ export class ConfirmUserUseCase {
       throw new ExpiredTokenError();
     }
 
+    const user = await this.userRepository.findById(token.userId);
+    if (!user) {
+      throw new UserNotFoundError();
+    }
+
     if (token.confirmed) {
-      const user = await this.userRepository.findById(token.userId);
-
-      if (!user) {
-        throw new UserNotFoundError();
-      }
-
       if (!user.passwordHash) {
         throw new UserMissingPasswordError();
       } else {
@@ -61,7 +54,11 @@ export class ConfirmUserUseCase {
       }
     }
 
+    user.setConfirmed();
+
     await this.confirmUserTokenRepository.confirm(data.tokenId);
+
+    await this.userRepository.update(user);
 
     const setupPasswordToken = this.jwtService.generateSetupPasswordToken(
       token.userId,
