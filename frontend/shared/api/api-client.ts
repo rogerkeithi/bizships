@@ -6,6 +6,11 @@ interface RetryableRequestConfig extends InternalAxiosRequestConfig {
   _retry?: boolean;
 }
 
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
+
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:4000";
 
@@ -45,13 +50,13 @@ apiClient.interceptors.response.use(
     originalRequest._retry = true;
 
     try {
-      const { data } = await axios.post<{ accessToken: string }>(
+      const { data } = await axios.post<ApiResponse<{ accessToken: string }>>(
         `${API_BASE_URL}/refresh`,
         { refreshToken },
       );
 
-      authTokenStorage.setAccessToken(data.accessToken);
-      originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+      authTokenStorage.setAccessToken(data.data.accessToken);
+      originalRequest.headers.Authorization = `Bearer ${data.data.accessToken}`;
 
       return apiClient(originalRequest);
     } catch (refreshError) {

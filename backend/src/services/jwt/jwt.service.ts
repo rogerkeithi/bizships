@@ -74,4 +74,18 @@ export class JwtService {
       throw new InvalidTokenError();
     }
   }
+
+  verifySetupPasswordToken(token: string): boolean {
+    try {
+      const payload = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
+
+      if (!payload) {
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }

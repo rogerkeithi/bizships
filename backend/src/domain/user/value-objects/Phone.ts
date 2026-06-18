@@ -23,7 +23,13 @@ export class Phone {
   }
 
   private normalize(phone: string): string | null {
-    const parsed = parsePhoneNumberFromString(phone);
+    const normalized = phone.trim();
+
+    if (!normalized.startsWith("+")) {
+      return null;
+    }
+
+    const parsed = parsePhoneNumberFromString(normalized);
 
     if (!parsed?.isValid()) {
       return null;

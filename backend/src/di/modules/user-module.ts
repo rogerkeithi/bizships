@@ -20,6 +20,10 @@ import { SendSetupPasswordCodeUseCase } from "@src/application/user/use-cases/se
 import ResendConfirmUserController from "@src/interfaces/http/controllers/user/resend-confirm-user.controller";
 import VerifySetupPasswordCodeController from "@src/interfaces/http/controllers/user/verify-setup-password-code.controller";
 import SendSetupPasswordCodeController from "@src/interfaces/http/controllers/user/send-setup-password-code.controller";
+import { FinishRegistrationUseCase } from "@src/application/user/use-cases/finish-registration/finish-registration";
+import { VerifySetupPasswordTokenUseCase } from "@src/application/user/use-cases/verify-setup-password-token/verify-setup-password-token";
+import FinishRegistrationController from "@src/interfaces/http/controllers/user/finish-registration.controller";
+import VerifySetupPasswordTokenController from "@src/interfaces/http/controllers/user/verify-setup-password-token.controller";
 
 export function registerUserModule(container: Container) {
   //Repositories
@@ -41,6 +45,10 @@ export function registerUserModule(container: Container) {
   container
     .bind<SendSetupPasswordCodeUseCase>(SendSetupPasswordCodeUseCase)
     .toSelf();
+  container.bind<FinishRegistrationUseCase>(FinishRegistrationUseCase).toSelf();
+  container
+    .bind<VerifySetupPasswordTokenUseCase>(VerifySetupPasswordTokenUseCase)
+    .toSelf();
 
   //Controllers
   container.bind<CreateUserController>(CreateUserController).toSelf();
@@ -55,5 +63,13 @@ export function registerUserModule(container: Container) {
     .toSelf();
   container
     .bind<SendSetupPasswordCodeController>(SendSetupPasswordCodeController)
+    .toSelf();
+  container
+    .bind<FinishRegistrationController>(FinishRegistrationController)
+    .toSelf();
+  container
+    .bind<VerifySetupPasswordTokenController>(
+      VerifySetupPasswordTokenController,
+    )
     .toSelf();
 }

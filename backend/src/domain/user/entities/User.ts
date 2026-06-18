@@ -16,8 +16,9 @@ export class User {
   private _firstName?: string;
   private _lastName?: string;
   private _socialName?: string;
+  private _birthDate?: Date;
   private _phone?: Phone;
-  private _secondaryPhone?: Phone;
+  private _phoneVerifiedAt?: Date;
   private _address?: Address;
   private _deactivatedAt?: Date;
   private _createdAt?: Date;
@@ -34,8 +35,9 @@ export class User {
     this._firstName = props.firstName;
     this._lastName = props.lastName;
     this._socialName = props.socialName;
+    this._birthDate = props.birthDate;
     this._phone = props.phone;
-    this._secondaryPhone = props.secondaryPhone;
+    this._phoneVerifiedAt = props.phoneVerifiedAt;
     this._address = props.address;
     this._deactivatedAt = props.deactivatedAt;
     this._createdAt = props.createdAt;
@@ -64,6 +66,23 @@ export class User {
 
   public setPassword(passwordHash: PasswordHash) {
     this._passwordHash = passwordHash;
+  }
+
+  public finishRegistration(data: {
+    firstName: string;
+    lastName: string;
+    birthDate: Date;
+    phone: Phone;
+    address: Address;
+    socialName?: string;
+  }) {
+    this._firstName = data.firstName;
+    this._lastName = data.lastName;
+    this._birthDate = data.birthDate;
+    this._phone = data.phone;
+    this._address = data.address;
+
+    if (data.socialName) this._socialName = data.socialName;
   }
 
   get email(): Email {
@@ -98,12 +117,16 @@ export class User {
     return this._socialName;
   }
 
+  get birthDate(): Date | undefined {
+    return this._birthDate;
+  }
+
   get phone(): Phone | undefined {
     return this._phone;
   }
 
-  get secondaryPhone(): Phone | undefined {
-    return this._secondaryPhone;
+  get phoneVerifiedAt(): Date | undefined {
+    return this._phoneVerifiedAt;
   }
 
   get address(): Address | undefined {
@@ -136,9 +159,10 @@ interface UserProps {
   firstName?: string;
   lastName?: string;
   socialName?: string;
+  birthDate?: Date;
 
   phone?: Phone;
-  secondaryPhone?: Phone;
+  phoneVerifiedAt?: Date;
 
   address?: Address;
 

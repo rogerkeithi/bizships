@@ -4,6 +4,11 @@ import {
   type AuthTokens,
 } from "@/shared/lib/auth-token-storage";
 
+interface ApiResponse<T> {
+  success: boolean;
+  data: T;
+}
+
 export interface LoginPayload {
   email: string;
   password: string;
@@ -15,18 +20,28 @@ export interface RefreshPayload {
 
 export const authService = {
   async login(payload: LoginPayload) {
-    const { data } = await apiClient.post<AuthTokens>("/login", payload);
-    authTokenStorage.setTokens(data);
-    return data;
+    const { data } = await apiClient.post<ApiResponse<AuthTokens>>(
+      "/login",
+      payload,
+    );
+    const tokens = data.data;
+    const userName = payload.email.split("@")[0] || payload.email;
+
+    authTokenStorage.setTokens(tokens, {
+      email: payload.email,
+      name: userName,
+    });
+
+    return tokens;
   },
 
   async refresh(payload: RefreshPayload) {
-    const { data } = await apiClient.post<{ accessToken: string }>(
+    const { data } = await apiClient.post<ApiResponse<{ accessToken: string }>>(
       "/refresh",
       payload,
     );
-    authTokenStorage.setAccessToken(data.accessToken);
-    return data;
+    authTokenStorage.setAccessToken(data.data.accessToken);
+    return data.data;
   },
 
   async logout() {

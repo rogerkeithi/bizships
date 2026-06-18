@@ -14,11 +14,15 @@ export class UserPersistenceMapper {
       country: user.country.getValue(),
       status: user.status,
       isConfirmed: user.isConfirmed,
+
       firstName: user.firstName,
       lastName: user.lastName,
       socialName: user.socialName,
+
+      birthDate: user.birthDate,
       phone: user.phone?.getValue(),
-      secondaryPhone: user.secondaryPhone?.getValue(),
+      phoneVerifiedAt: user.phoneVerifiedAt,
+
       passwordHash: user.passwordHash?.getValue(),
       deactivatedAt: user.deactivatedAt,
       address: user.address
@@ -38,10 +42,9 @@ export class UserPersistenceMapper {
       firstName: raw.firstName,
       lastName: raw.lastName,
       socialName: raw.socialName,
+      birthDate: raw.birthDate,
       phone: raw.phone ? new Phone(raw.phone) : undefined,
-      secondaryPhone: raw.secondaryPhone
-        ? new Phone(raw.secondaryPhone)
-        : undefined,
+      phoneVerifiedAt: raw.phoneVerifiedAt,
       passwordHash: raw.passwordHash
         ? new PasswordHash(raw.passwordHash)
         : undefined,

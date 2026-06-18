@@ -1,10 +1,12 @@
 import { ConfirmUserSchema } from "@src/application/user/use-cases/confirm-user/confirm-user.req.dto";
 import { CreateUserSchema } from "@src/application/user/use-cases/create-user/create-user.req.dto";
 import { FindUserByEmailSchema } from "@src/application/user/use-cases/find-user-by-email/find-user-by-email.req.dto";
+import { FinishRegistrationSchema } from "@src/application/user/use-cases/finish-registration/finish-registration.req.dto";
 import { ResendConfirmUserSchema } from "@src/application/user/use-cases/resend-confirm-user/resend-confirm-user.req.dto";
 import { SendSetupPasswordCodeSchema } from "@src/application/user/use-cases/send-setup-password-code/send-setup-password-code.req.dto";
 import { SetupPasswordSchema } from "@src/application/user/use-cases/setup-password/setup-password.req.dto";
 import { VerifySetupPasswordCodeSchema } from "@src/application/user/use-cases/verify-setup-password-code/verify-setup-password-code.req.dto";
+import { VerifySetupPasswordTokenSchema } from "@src/application/user/use-cases/verify-setup-password-token/verify-setup-password-token.req.dto";
 import { ZodOpenApiPathsObject } from "zod-openapi";
 
 export const userPaths: ZodOpenApiPathsObject = {
@@ -86,6 +88,36 @@ export const userPaths: ZodOpenApiPathsObject = {
 
         "403": {
           description: "User already confirmed",
+        },
+      },
+    },
+  },
+
+  "/users/finish-registration": {
+    post: {
+      tags: ["Users"],
+      summary: "Finish registration",
+
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: FinishRegistrationSchema,
+          },
+        },
+      },
+
+      responses: {
+        "200": {
+          description: "Finish registration",
+        },
+
+        "400": {
+          description: "Validation error",
+        },
+
+        "403": {
+          description: "User already registered",
         },
       },
     },
@@ -176,6 +208,36 @@ export const userPaths: ZodOpenApiPathsObject = {
 
         "404": {
           description: "User not found",
+        },
+      },
+    },
+  },
+
+  "/users/verify-setup-password-token": {
+    post: {
+      tags: ["Users"],
+      summary: "Verify setup password token",
+
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: VerifySetupPasswordTokenSchema,
+          },
+        },
+      },
+
+      responses: {
+        "200": {
+          description: "Token successfully verified",
+        },
+
+        "400": {
+          description: "Validation error",
+        },
+
+        "404": {
+          description: "Token not found",
         },
       },
     },

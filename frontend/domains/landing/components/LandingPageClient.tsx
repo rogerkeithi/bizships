@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { type PointerEvent, useEffect, useMemo, useState } from "react";
 import {
   ArrowUpRight,
@@ -20,6 +21,7 @@ import { Button } from "@/shared/components/ui/button";
 import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTranslation } from "@/i18n";
 import { ThemeSwitcher } from "@/shared/components/ThemeSwitcher";
+import { authTokenStorage } from "@/shared/lib/auth-token-storage";
 import { cn } from "@/shared/lib/utils";
 
 type MatchProfile = {
@@ -226,8 +228,10 @@ function SwipeableMatchCard({
 }
 
 export function LandingPageClient() {
+  const router = useRouter();
   const { landing } = useTranslation();
   const [activeSection, setActiveSection] = useState("howItWorks");
+  const [isCheckingSession, setIsCheckingSession] = useState(true);
   const navItems = useMemo(
     () => [
       { id: "howItWorks", label: landing.nav.howItWorks },
@@ -238,6 +242,31 @@ export function LandingPageClient() {
   );
 
   useEffect(() => {
+    let isActive = true;
+    const isAuthenticated = Boolean(authTokenStorage.getAccessToken());
+
+    if (isAuthenticated) {
+      router.replace("/home");
+    } else {
+      queueMicrotask(() => {
+        if (!isActive) {
+          return;
+        }
+
+        setIsCheckingSession(false);
+      });
+    }
+
+    return () => {
+      isActive = false;
+    };
+  }, [router]);
+
+  useEffect(() => {
+    if (isCheckingSession) {
+      return;
+    }
+
     const sections = navItems
       .map(({ id }) => document.getElementById(id))
       .filter((section): section is HTMLElement => section !== null);
@@ -265,7 +294,11 @@ export function LandingPageClient() {
     return () => {
       observer.disconnect();
     };
-  }, [navItems]);
+  }, [isCheckingSession, navItems]);
+
+  if (isCheckingSession) {
+    return <div className="min-h-screen bg-background" />;
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans antialiased selection:bg-primary selection:text-primary-foreground">
