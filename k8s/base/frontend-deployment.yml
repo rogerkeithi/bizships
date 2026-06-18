@@ -24,5 +24,12 @@ spec:
 
           imagePullPolicy: Always
 
+          env:
+            - name: NEXT_PUBLIC_API_URL
+              valueFrom:
+                secretKeyRef:
+                  name: frontend-secret
+                  key: NEXT_PUBLIC_API_URL
+
           ports:
             - containerPort: 3000

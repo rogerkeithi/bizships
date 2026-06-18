@@ -203,7 +203,7 @@ export function LoginPageClient() {
 
         <p className="mt-8 text-center text-[11px] text-[#64748b] dark:text-[#94a3b8]">
           Nao tem uma conta?{" "}
-          <Link href="/#joinUs" className="font-black text-primary">
+          <Link href="/signup" className="font-black text-primary">
             Cadastre-se agora
           </Link>
         </p>
