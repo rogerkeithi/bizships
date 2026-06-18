@@ -18,8 +18,10 @@ jobs:
         run: |
           if [ "${GITHUB_REF_NAME}" = "main" ]; then
             echo "IMAGE_NAME=n0jiri/bizships-frontend-production" >> $GITHUB_ENV
+            echo "NEXT_PUBLIC_API_URL=${{ secrets.PRODUCTION_NEXT_PUBLIC_API_URL }}" >> $GITHUB_ENV
           else
             echo "IMAGE_NAME=n0jiri/bizships-frontend-staging" >> $GITHUB_ENV
+            echo "NEXT_PUBLIC_API_URL=${{ secrets.STAGING_NEXT_PUBLIC_API_URL }}" >> $GITHUB_ENV
           fi
 
       - name: Login Docker Hub
@@ -31,6 +33,7 @@ jobs:
       - name: Build image
         run: |
           docker build --no-cache \
+            --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
             -t $IMAGE_NAME:latest \
             -f ./frontend/Dockerfile \
             ./frontend
