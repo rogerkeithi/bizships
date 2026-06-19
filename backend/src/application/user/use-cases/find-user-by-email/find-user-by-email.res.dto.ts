@@ -4,7 +4,9 @@ export interface FindUserByEmailRes {
   firstName?: string;
   lastName?: string;
   socialName?: string;
+  birthDate?: Date;
   phone?: string;
+  phoneVerifiedAt?: Date;
   status: boolean;
   isConfirmed: boolean;
 }

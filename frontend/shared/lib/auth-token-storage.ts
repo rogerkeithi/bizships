@@ -11,6 +11,13 @@ export interface AuthTokens {
 export interface AuthUser {
   email: string;
   name: string;
+  userId?: string;
+  firstName?: string;
+  lastName?: string;
+  socialName?: string;
+  birthDate?: string;
+  phone?: string;
+  isConfirmed?: boolean;
 }
 
 const canUseStorage = () => typeof window !== "undefined";
@@ -71,6 +78,14 @@ export const authTokenStorage = {
     }
 
     window.localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+  },
+
+  setUser(user: AuthUser) {
+    if (!canUseStorage()) {
+      return;
+    }
+
+    window.localStorage.setItem(USER_KEY, JSON.stringify(user));
   },
 
   clear() {

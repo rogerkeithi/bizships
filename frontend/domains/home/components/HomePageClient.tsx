@@ -5,6 +5,10 @@ import { useEffect, useState } from "react";
 import { Users } from "lucide-react";
 
 import { authService } from "@/domains/auth/services/auth-service";
+import {
+  isProfileComplete,
+  userService,
+} from "@/domains/user/services/user-service";
 import { AuthenticatedNavbar } from "@/shared/components/AuthenticatedNavbar";
 import { authTokenStorage, type AuthUser } from "@/shared/lib/auth-token-storage";
 
@@ -12,22 +16,52 @@ export function HomePageClient() {
   const router = useRouter();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [isCheckingProfile, setIsCheckingProfile] = useState(true);
 
   useEffect(() => {
     let isActive = true;
-    const accessToken = authTokenStorage.getAccessToken();
 
-    if (!accessToken) {
-      router.replace("/login?redirectTo=/home");
-      return;
-    }
+    const checkSession = async () => {
+      const accessToken = authTokenStorage.getAccessToken();
+
+      if (!accessToken) {
+        router.replace("/login?redirectTo=/home");
+        return;
+      }
+
+      const storedUser = authTokenStorage.getUser();
+
+      if (!storedUser?.email) {
+        router.replace("/login?redirectTo=/home");
+        return;
+      }
+
+      try {
+        const syncedUser = isProfileComplete(storedUser)
+          ? storedUser
+          : await userService.syncAuthUser(storedUser.email);
+
+        if (!isProfileComplete(syncedUser)) {
+          router.replace("/complete-profile");
+          return;
+        }
+
+        if (isActive) {
+          setUser(syncedUser);
+          setIsCheckingProfile(false);
+        }
+      } catch {
+        authTokenStorage.clear();
+        router.replace("/login?redirectTo=/home");
+      }
+    };
 
     queueMicrotask(() => {
       if (!isActive) {
         return;
       }
 
-      setUser(authTokenStorage.getUser());
+      void checkSession();
     });
 
     return () => {
@@ -47,6 +81,16 @@ export function HomePageClient() {
   };
 
   const displayName = user?.name ?? "Usuario";
+
+  if (isCheckingProfile) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-background text-foreground">
+        <p className="text-sm font-semibold text-muted-foreground">
+          Carregando sua conta...
+        </p>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-background text-foreground">

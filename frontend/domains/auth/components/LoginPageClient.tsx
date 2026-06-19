@@ -9,6 +9,10 @@ import { FormEvent, useMemo, useState } from "react";
 import { z } from "zod";
 
 import { authService } from "@/domains/auth/services/auth-service";
+import {
+  isProfileComplete,
+  userService,
+} from "@/domains/user/services/user-service";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 
@@ -69,7 +73,14 @@ export function LoginPageClient() {
       });
 
       await authService.login(payload);
-      router.replace(redirectTo);
+      const user = await userService.syncAuthUser(payload.email);
+
+      if (!isProfileComplete(user)) {
+        router.replace("/complete-profile");
+        return;
+      }
+
+      router.replace(redirectTo === "/complete-profile" ? "/home" : redirectTo);
     } catch (error) {
       setErrorMessage(getLoginErrorMessage(error));
     } finally {

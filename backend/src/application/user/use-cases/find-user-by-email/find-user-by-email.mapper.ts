@@ -9,7 +9,9 @@ export class FindUserByEmailMapper {
       firstName: user.firstName,
       lastName: user.lastName,
       socialName: user.socialName,
+      birthDate: user.birthDate,
       phone: user.phone?.getValue(),
+      phoneVerifiedAt: user.phoneVerifiedAt,
       status: user.status,
       isConfirmed: user.isConfirmed,
     };
