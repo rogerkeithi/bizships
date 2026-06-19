@@ -1,0 +1,49 @@
+const appEn = {
+  common: {
+    loadingAccount: "Loading your account...",
+    unavailable: "Not provided",
+  },
+  navbar: {
+    search: "Search connections, companies, and communities",
+    connected: "Connected",
+    viewProfile: "View profile",
+    logout: "Log out",
+  },
+  home: {
+    greeting: "Hi,",
+    title: "Discover jobs and people with one gesture.",
+    description:
+      "This home is using mocked data, but the card shape already separates jobs and networking so it can receive real API data later.",
+    jobsTitle: "Jobs",
+    jobsDescription:
+      "Compare compatibility, work model, and location before liking.",
+    networkingTitle: "Networking",
+    networkingDescription:
+      "Find people with nearby fields, education, and interests.",
+    jobBadge: "Job",
+    networkingBadge: "Networking",
+    like: "Like",
+    pass: "Pass",
+    resetCard: "Reset card",
+    jobSummary: "Job summary",
+    biography: "Biography",
+    showMore: "Show more",
+    showLess: "Show less",
+    location: "Location",
+  },
+  profile: {
+    loading: "Loading profile...",
+    eyebrow: "User profile",
+    description: "Read-only view of the connected user's data.",
+    firstName: "First name",
+    lastName: "Last name",
+    email: "E-mail",
+    birthDate: "Birth date",
+    phone: "Phone",
+    status: "Status",
+    confirmed: "Confirmed account",
+    pending: "Pending",
+  },
+};
+
+export default appEn;

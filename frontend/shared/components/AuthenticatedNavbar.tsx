@@ -1,9 +1,10 @@
 "use client";
 
-import { Bell, LogOut, Search } from "lucide-react";
+import { Bell, LogOut, Search, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+import { useTranslation } from "@/i18n";
 import { Button } from "@/shared/components/ui/button";
 import {
   DropdownMenu,
@@ -25,6 +26,7 @@ export function AuthenticatedNavbar({
   isLoggingOut = false,
   onLogout,
 }: AuthenticatedNavbarProps) {
+  const { app } = useTranslation();
   const userInitial = userName.slice(0, 1).toUpperCase();
 
   return (
@@ -44,7 +46,7 @@ export function AuthenticatedNavbar({
 
         <div className="hidden w-full max-w-sm items-center gap-2 rounded-full border border-border bg-background px-3 py-2 text-sm text-muted-foreground md:flex">
           <Search className="size-4" />
-          Buscar conexoes, empresas e comunidades
+          {app.navbar.search}
         </div>
 
         <div className="flex items-center gap-2">
@@ -74,11 +76,18 @@ export function AuthenticatedNavbar({
                   {userName}
                 </span>
                 <span className="text-[0.7rem] text-muted-foreground">
-                  Conectado
+                  {app.navbar.connected}
                 </span>
               </DropdownMenuLabel>
 
               <DropdownMenuSeparator />
+
+              <DropdownMenuItem asChild>
+                <Link href="/profile">
+                  <User className="size-4" />
+                  {app.navbar.viewProfile}
+                </Link>
+              </DropdownMenuItem>
 
               <DropdownMenuItem
                 variant="destructive"
@@ -86,7 +95,7 @@ export function AuthenticatedNavbar({
                 disabled={isLoggingOut}
               >
                 <LogOut className="size-4" />
-                Sair
+                {app.navbar.logout}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

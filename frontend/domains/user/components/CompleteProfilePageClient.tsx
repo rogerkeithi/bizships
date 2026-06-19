@@ -424,6 +424,7 @@ function PhoneField({
   callingCodeOptions: Array<{
     countryCode: string;
     countryName: string;
+    flag: string;
     callingCode: string;
   }>;
   onCallingCodeChange: React.ChangeEventHandler<HTMLSelectElement>;
@@ -444,14 +445,15 @@ function PhoneField({
           onChange={onCallingCodeChange}
           disabled={disabled}
           aria-label="Codigo internacional"
-          className="h-[38px] cursor-pointer border-r border-[#cbd5e1] bg-transparent px-3 text-xs font-bold outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#2d3c54]"
+          className="h-[38px] cursor-pointer border-r border-[#cbd5e1] bg-transparent px-3 text-xs font-bold text-[#0f172a] outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#2d3c54] dark:text-[#f8fafc]"
         >
           {callingCodeOptions.map((option) => (
             <option
               key={`${option.countryCode}-${option.callingCode}`}
               value={option.callingCode}
+              className="bg-white text-[#0f172a]"
             >
-              {option.callingCode} {option.countryCode}
+              {option.flag} {option.callingCode}
             </option>
           ))}
         </select>
