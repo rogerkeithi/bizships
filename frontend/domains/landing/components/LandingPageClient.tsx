@@ -481,8 +481,8 @@ export function LandingPageClient() {
             </div>
 
             <Link
-              href="#"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all dark:text-[#dbe8ff]"
+              href="/signup"
+              className="inline-flex cursor-pointer items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all dark:text-[#dbe8ff]"
             >
               {landing.cards.communities.action}
               <ArrowUpRight className="w-4 h-4" />
@@ -505,8 +505,8 @@ export function LandingPageClient() {
             </div>
 
             <Link
-              href="#"
-              className="inline-flex items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all dark:text-[#dbe8ff]"
+              href="/signup"
+              className="inline-flex cursor-pointer items-center gap-1 text-sm font-semibold text-primary hover:gap-2 transition-all dark:text-[#dbe8ff]"
             >
               {landing.cards.companyPages.action}
               <ArrowUpRight className="w-4 h-4" />
@@ -514,7 +514,56 @@ export function LandingPageClient() {
           </div>
         </section>
 
-        <div id="joinUs" className="scroll-mt-28" />
+        <section
+          id="joinUs"
+          className="max-w-6xl mx-auto px-6 mt-16 scroll-mt-28"
+        >
+          <div className="grid grid-cols-1 gap-8 rounded-[2.5rem] border border-border bg-card p-8 shadow-sm dark:shadow-black/20 md:grid-cols-12 md:p-12">
+            <div className="md:col-span-5">
+              <h3 className="text-3xl font-bold tracking-tight text-foreground md:text-4xl">
+                {landing.cta.title}
+              </h3>
+              <p className="mt-4 text-sm leading-6 text-muted-foreground">
+                {landing.cta.description}
+              </p>
+
+              <Button
+                asChild
+                className="mt-6 h-10 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+              >
+                <Link href="/signup">{landing.cta.action}</Link>
+              </Button>
+            </div>
+
+            <div className="md:col-span-7">
+              <div className="grid gap-3 sm:grid-cols-3">
+                {["94%", "87%", "73%"].map((score, index) => (
+                  <div
+                    key={score}
+                    className="rounded-2xl border border-border bg-background p-4"
+                  >
+                    <div className="mb-4 flex items-center justify-between">
+                      <span className="rounded-full bg-primary/10 px-3 py-1 text-[10px] font-black text-primary">
+                        {score}
+                      </span>
+                      <Heart className="size-4 text-primary" />
+                    </div>
+                    <p className="text-sm font-bold">
+                      {index === 0
+                        ? "Product Designer"
+                        : index === 1
+                          ? "Front-end React"
+                          : "Data Analyst"}
+                    </p>
+                    <p className="mt-2 text-xs leading-5 text-muted-foreground">
+                      {landing.cta.mockupLabel}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
 
       <footer className="bg-card border-t border-border mt-32 py-16 text-muted-foreground text-xs">

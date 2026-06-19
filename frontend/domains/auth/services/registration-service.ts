@@ -24,11 +24,35 @@ export interface UserByEmail {
 }
 
 export const getApiErrorCode = (error: unknown) => {
-  if (!(error instanceof AxiosError)) {
+  if (error instanceof AxiosError) {
+    return (error.response?.data as ApiErrorBody | undefined)?.code ?? null;
+  }
+
+  if (!error || typeof error !== "object") {
     return null;
   }
 
-  return (error.response?.data as ApiErrorBody | undefined)?.code ?? null;
+  const responseData = (error as { response?: { data?: unknown } }).response
+    ?.data;
+
+  if (responseData && typeof responseData === "object") {
+    const code = (responseData as { code?: unknown }).code;
+
+    if (typeof code === "string") {
+      return code;
+    }
+
+    const nestedCode = (responseData as { error?: { code?: unknown } }).error
+      ?.code;
+
+    if (typeof nestedCode === "string") {
+      return nestedCode;
+    }
+  }
+
+  const code = (error as { code?: unknown }).code;
+
+  return typeof code === "string" ? code : null;
 };
 
 export const registrationService = {

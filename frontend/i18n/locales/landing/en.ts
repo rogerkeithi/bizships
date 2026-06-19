@@ -2,7 +2,7 @@ const landingEn = {
   nav: {
     howItWorks: "How it works",
     companies: "Companies",
-    joinUs: "Join us",
+    joinUs: "Candidates",
     login: "Log In",
     getStarted: "Get Started",
   },
@@ -63,26 +63,26 @@ const landingEn = {
 
   cards: {
     communities: {
-      title: "Fast matches",
+      title: "Jobs with compatible candidates",
       description:
-        "Replace long searches with an intelligent queue of profiles and companies that may make sense for your networking.",
-      action: "View matches",
+        "Companies can publish openings and review candidates with compatibility percentages for more informed decisions.",
+      action: "View candidates",
     },
 
     companyPages: {
-      title: "Companies with context",
+      title: "Like, pass, and contact",
       description:
-        "Companies show culture, communities, interests, and professional relationship opportunities.",
-      action: "Create profile",
+        "Recruiters can like or pass profiles, compare fit with the role, and start a conversation when there is interest.",
+      action: "Post a job",
     },
   },
 
   cta: {
-    title: "Start creating professional connections today.",
+    title: "Candidates see better-fit opportunities.",
     description:
-      "Connect people and companies with a lightweight, visual experience built to turn interest into conversation.",
-    action: "Get Early Access",
-    mockupLabel: "Watch demo",
+      "Job seekers can browse openings with a compatibility score between their profile and each role before showing interest.",
+    action: "Create account",
+    mockupLabel: "Compatibility",
   },
 
   footer: {

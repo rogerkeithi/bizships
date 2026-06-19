@@ -21,9 +21,9 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(errorHandler);
-
 app.use(userRoute);
 app.use(authRoute);
+
+app.use(errorHandler);
 
 export default app;

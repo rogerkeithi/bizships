@@ -2,7 +2,7 @@ export const landingPt = {
   nav: {
     howItWorks: "Como funciona",
     companies: "Empresas",
-    joinUs: "Junte se à rede",
+    joinUs: "Candidatos",
     login: "Entrar",
     getStarted: "Começar",
   },
@@ -64,26 +64,26 @@ export const landingPt = {
 
   cards: {
     communities: {
-      title: "Matches rápidos",
+      title: "Vagas com candidatos compativeis",
       description:
-        "Troque buscas longas por uma fila inteligente de perfis e empresas que podem fazer sentido para o seu networking.",
-      action: "Ver matches",
+        "Empresas podem publicar vagas e visualizar candidatos com percentual de compatibilidade para decidir com mais contexto.",
+      action: "Ver candidatos",
     },
 
     companyPages: {
-      title: "Empresas com contexto",
+      title: "Like, dislike e contato direto",
       description:
-        "Empresas mostram cultura, comunidades, interesses e oportunidades de relacionamento profissional.",
-      action: "Criar perfil",
+        "Recrutadores podem curtir ou passar perfis, acompanhar a afinidade com a vaga e iniciar contato quando houver interesse.",
+      action: "Publicar vaga",
     },
   },
 
   cta: {
-    title: "Comece a criar conexões profissionais hoje.",
+    title: "Candidatos encontram vagas com mais clareza.",
     description:
-      "Conecte pessoas e empresas com uma experiência leve, visual e feita para transformar interesse em conversa.",
-    action: "Solicitar acesso",
-    mockupLabel: "Ver demo",
+      "Quem busca uma oportunidade pode visualizar vagas com a porcentagem de compatibilidade entre o proprio perfil e cada posicao antes de demonstrar interesse.",
+    action: "Criar conta",
+    mockupLabel: "Compatibilidade",
   },
 
   footer: {

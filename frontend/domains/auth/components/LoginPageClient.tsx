@@ -8,6 +8,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useMemo, useState } from "react";
 import { z } from "zod";
 
+import { getApiErrorCode } from "@/domains/auth/services/registration-service";
 import { authService } from "@/domains/auth/services/auth-service";
 import {
   isProfileComplete,
@@ -40,6 +41,13 @@ const getLoginErrorMessage = (error: unknown) => {
   }
 
   return "Nao foi possivel entrar. Tente novamente.";
+};
+
+const isUnconfirmedUserError = (error: unknown) => {
+  const code = getApiErrorCode(error);
+  const normalizedCode = code?.toUpperCase();
+
+  return normalizedCode === "USER_NOT_CONFIRMED";
 };
 
 export function LoginPageClient() {
@@ -84,6 +92,14 @@ export function LoginPageClient() {
 
       router.replace(redirectTo === "/complete-profile" ? "/home" : redirectTo);
     } catch (error) {
+      if (isUnconfirmedUserError(error)) {
+        const parsedEmail = email.trim().toLowerCase();
+        const confirmUrl = `/confirm-email?sent=1&resend=1&email=${encodeURIComponent(parsedEmail)}`;
+
+        router.replace(confirmUrl);
+        return;
+      }
+
       setErrorMessage(getLoginErrorMessage(error));
     } finally {
       setIsSubmitting(false);

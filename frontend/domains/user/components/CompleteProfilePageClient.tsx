@@ -5,7 +5,7 @@ import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useEffect, useMemo, useState } from "react";
 import { z } from "zod";
 
 import {
@@ -13,9 +13,13 @@ import {
   userService,
   type FinishRegistrationPayload,
 } from "@/domains/user/services/user-service";
-import { useTranslation } from "@/i18n";
+import { useI18n, useTranslation } from "@/i18n";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
+import {
+  CALLING_CODE_OPTIONS,
+  getCountryOptions,
+} from "@/shared/lib/countries";
 import {
   authTokenStorage,
   type AuthUser,
@@ -28,15 +32,24 @@ const optionalText = z
   .trim()
   .transform((value) => (value.length > 0 ? value : undefined));
 
+const getTodayDateInputValue = () => new Date().toISOString().slice(0, 10);
+
 const personalProfileSchema = z.object({
   firstName: z.string().trim().min(2, "Informe seu primeiro nome."),
   lastName: z.string().trim().min(2, "Informe seu sobrenome."),
   socialName: optionalText.optional(),
-  birthDate: z.string().min(1, "Informe sua data de nascimento."),
-  phone: z
+  birthDate: z
+    .string()
+    .min(1, "Informe sua data de nascimento.")
+    .refine(
+      (value) => value <= getTodayDateInputValue(),
+      "A data de nascimento nao pode ser futura.",
+    ),
+  phoneCallingCode: z.string().regex(/^\+\d{1,4}$/),
+  phoneNumber: z
     .string()
     .trim()
-    .regex(/^\+\d{10,15}$/, "Use o telefone com DDI. Ex: +5511999999999."),
+    .regex(/^\d{8,14}$/, "Informe apenas numeros no telefone."),
 });
 
 const addressProfileSchema = z.object({
@@ -54,7 +67,8 @@ const initialForm: CompleteProfileForm = {
   lastName: "",
   socialName: undefined,
   birthDate: "",
-  phone: "",
+  phoneCallingCode: "+55",
+  phoneNumber: "",
   country: "BR",
   city: "",
   state: "",
@@ -75,6 +89,8 @@ const getErrorMessage = (error: unknown) => {
 export function CompleteProfilePageClient() {
   const router = useRouter();
   const { auth } = useTranslation();
+  const { language } = useI18n();
+  const countryOptions = useMemo(() => getCountryOptions(language), [language]);
   const [user, setUser] = useState<AuthUser | null>(null);
   const [form, setForm] = useState<CompleteProfileForm>(initialForm);
   const [errorMessage, setErrorMessage] = useState("");
@@ -113,7 +129,8 @@ export function CompleteProfilePageClient() {
           lastName: syncedUser.lastName ?? "",
           socialName: syncedUser.socialName ?? "",
           birthDate: syncedUser.birthDate?.slice(0, 10) ?? "",
-          phone: syncedUser.phone ?? "",
+          phoneCallingCode: "+55",
+          phoneNumber: syncedUser.phone?.replace(/^\+\d{1,4}/, "") ?? "",
         }));
         setIsLoading(false);
       } catch {
@@ -137,7 +154,7 @@ export function CompleteProfilePageClient() {
 
   const updateField =
     (field: keyof CompleteProfileForm) =>
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
       setForm((currentForm) => ({
         ...currentForm,
         [field]: event.target.value,
@@ -173,7 +190,7 @@ export function CompleteProfilePageClient() {
         firstName: parsed.firstName,
         lastName: parsed.lastName,
         socialName: parsed.socialName,
-        phone: parsed.phone,
+        phone: `${parsed.phoneCallingCode}${parsed.phoneNumber}`,
         birthDate: parsed.birthDate,
         address: {
           country: parsed.country.toUpperCase(),
@@ -271,27 +288,35 @@ export function CompleteProfilePageClient() {
                 type="date"
                 value={form.birthDate}
                 onChange={updateField("birthDate")}
+                max={getTodayDateInputValue()}
                 disabled={isSubmitting}
               />
               <div className="sm:col-span-2">
-                <ProfileField
-                  id="phone"
+                <PhoneField
                   label={auth.completeProfile.phone}
-                  value={form.phone}
-                  onChange={updateField("phone")}
-                  placeholder="+5511999999999"
+                  callingCode={form.phoneCallingCode}
+                  phoneNumber={form.phoneNumber}
+                  callingCodeOptions={CALLING_CODE_OPTIONS.map((option) => ({
+                    ...option,
+                    countryName:
+                      countryOptions.find(
+                        (country) => country.code === option.countryCode,
+                      )?.name ?? option.countryCode,
+                  }))}
+                  onCallingCodeChange={updateField("phoneCallingCode")}
+                  onPhoneNumberChange={updateField("phoneNumber")}
                   disabled={isSubmitting}
                 />
               </div>
             </div>
           ) : (
             <div className="grid gap-4 sm:grid-cols-3">
-              <ProfileField
+              <CountryField
                 id="country"
                 label={auth.completeProfile.country}
                 value={form.country}
                 onChange={updateField("country")}
-                maxLength={2}
+                countries={countryOptions}
                 disabled={isSubmitting}
               />
               <ProfileField
@@ -380,6 +405,99 @@ function StepIndicator({
           </div>
         );
       })}
+    </div>
+  );
+}
+
+function PhoneField({
+  label,
+  callingCode,
+  phoneNumber,
+  callingCodeOptions,
+  onCallingCodeChange,
+  onPhoneNumberChange,
+  disabled,
+}: {
+  label: string;
+  callingCode: string;
+  phoneNumber: string;
+  callingCodeOptions: Array<{
+    countryCode: string;
+    countryName: string;
+    callingCode: string;
+  }>;
+  onCallingCodeChange: React.ChangeEventHandler<HTMLSelectElement>;
+  onPhoneNumberChange: React.ChangeEventHandler<HTMLInputElement>;
+  disabled: boolean;
+}) {
+  return (
+    <div className="space-y-2">
+      <label
+        htmlFor="phoneNumber"
+        className="text-[9px] font-black uppercase tracking-[0.08em]"
+      >
+        {label}
+      </label>
+      <div className="grid grid-cols-[112px_1fr] overflow-hidden rounded-full border border-[#cbd5e1] bg-[#f7f8fc] dark:border-[#2d3c54] dark:bg-[#1d2d46]">
+        <select
+          value={callingCode}
+          onChange={onCallingCodeChange}
+          disabled={disabled}
+          aria-label="Codigo internacional"
+          className="h-[38px] cursor-pointer border-r border-[#cbd5e1] bg-transparent px-3 text-xs font-bold outline-none disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#2d3c54]"
+        >
+          {callingCodeOptions.map((option) => (
+            <option
+              key={`${option.countryCode}-${option.callingCode}`}
+              value={option.callingCode}
+            >
+              {option.callingCode} {option.countryCode}
+            </option>
+          ))}
+        </select>
+        <Input
+          id="phoneNumber"
+          inputMode="numeric"
+          value={phoneNumber}
+          onChange={onPhoneNumberChange}
+          placeholder="11999999999"
+          disabled={disabled}
+          className="h-[38px] rounded-none border-0 bg-transparent px-4 text-xs focus-visible:ring-0"
+        />
+      </div>
+    </div>
+  );
+}
+
+function CountryField({
+  id,
+  label,
+  countries,
+  ...selectProps
+}: {
+  id: string;
+  label: string;
+  countries: Array<{ code: string; name: string }>;
+} & React.ComponentProps<"select">) {
+  return (
+    <div className="space-y-2">
+      <label
+        htmlFor={id}
+        className="text-[9px] font-black uppercase tracking-[0.08em]"
+      >
+        {label}
+      </label>
+      <select
+        id={id}
+        className="h-[38px] w-full cursor-pointer rounded-full border border-[#cbd5e1] bg-[#f7f8fc] px-4 text-xs outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/30 disabled:cursor-not-allowed disabled:opacity-50 dark:border-[#2d3c54] dark:bg-[#1d2d46]"
+        {...selectProps}
+      >
+        {countries.map((country) => (
+          <option key={country.code} value={country.code}>
+            {country.name}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

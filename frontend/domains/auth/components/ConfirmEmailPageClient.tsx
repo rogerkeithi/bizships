@@ -18,6 +18,7 @@ import { Input } from "@/shared/components/ui/input";
 
 type Step =
   | "loading"
+  | "check-email"
   | "expired-confirm"
   | "request-code"
   | "verify-code"
@@ -67,6 +68,11 @@ export function ConfirmEmailPageClient() {
     () => searchParams.get("setupPasswordToken"),
     [searchParams],
   );
+  const sentEmail = useMemo(() => searchParams.get("email"), [searchParams]);
+  const shouldResendConfirm = useMemo(
+    () => searchParams.get("resend") === "1",
+    [searchParams],
+  );
   const [step, setStep] = useState<Step>("loading");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -83,6 +89,19 @@ export function ConfirmEmailPageClient() {
       setMessage("");
 
       try {
+        if (searchParams.get("sent") === "1") {
+          const parsedEmail = sentEmail ? emailSchema.parse(sentEmail) : "";
+          setEmail(parsedEmail);
+          setStep("check-email");
+
+          if (shouldResendConfirm && parsedEmail) {
+            await registrationService.resendConfirmEmail(parsedEmail);
+            setMessage("Enviamos um novo link de confirmacao para seu e-mail.");
+          }
+
+          return;
+        }
+
         if (setupTokenFromUrl) {
           const response =
             await registrationService.verifySetupPasswordToken(
@@ -143,10 +162,25 @@ export function ConfirmEmailPageClient() {
     return () => {
       isActive = false;
     };
-  }, [setupTokenFromUrl, tokenId]);
+  }, [searchParams, sentEmail, setupTokenFromUrl, shouldResendConfirm, tokenId]);
 
   const sendConfirmAgain = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setMessage("");
+    setIsSubmitting(true);
+
+    try {
+      const parsedEmail = emailSchema.parse(email);
+      await registrationService.resendConfirmEmail(parsedEmail);
+      setMessage("Enviamos um novo link de confirmacao para seu e-mail.");
+    } catch (error) {
+      setMessage(getMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const resendCurrentConfirmEmail = async () => {
     setMessage("");
     setIsSubmitting(true);
 
@@ -239,6 +273,44 @@ export function ConfirmEmailPageClient() {
       >
         <div className="flex justify-center py-8">
           <Loader2 className="size-6 animate-spin text-primary" />
+        </div>
+      </AuthCard>
+    );
+  }
+
+  if (step === "check-email") {
+    return (
+      <AuthCard
+        title={auth.signup.checkEmailTitle}
+        description={auth.signup.checkEmailDescription}
+      >
+        <div className="space-y-5 text-center">
+          <p className="rounded-2xl bg-[#f7f8fc] px-4 py-3 text-xs text-[#64748b] dark:bg-[#1d2d46] dark:text-[#94a3b8]">
+            {email}
+          </p>
+
+          <Feedback message={message} />
+
+          <Button
+            type="button"
+            variant="outline"
+            className="h-[38px] w-full rounded-full"
+            onClick={resendCurrentConfirmEmail}
+            disabled={isSubmitting}
+          >
+            {isSubmitting ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              auth.signup.resendLink
+            )}
+          </Button>
+
+          <Link
+            href="/login"
+            className="block text-[11px] font-black text-primary"
+          >
+            {auth.common.goToLogin}
+          </Link>
         </div>
       </AuthCard>
     );

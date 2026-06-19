@@ -2,6 +2,7 @@
 
 import { AxiosError } from "axios";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { FormEvent, useState } from "react";
 import { Loader2 } from "lucide-react";
 import { z } from "zod";
@@ -31,9 +32,14 @@ const getMessage = (error: unknown) => {
 
 export function SignupPageClient() {
   const { auth } = useTranslation();
+  const searchParams = useSearchParams();
+  const initialEmail = searchParams.get("email") ?? "";
+  const startsAtCheckEmail = searchParams.get("checkEmail") === "1";
   const [email, setEmail] = useState("");
-  const [confirmedEmail, setConfirmedEmail] = useState("");
-  const [status, setStatus] = useState<"form" | "check-email">("form");
+  const [confirmedEmail, setConfirmedEmail] = useState(initialEmail);
+  const [status, setStatus] = useState<"form" | "check-email">(
+    startsAtCheckEmail && initialEmail ? "check-email" : "form",
+  );
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isResending, setIsResending] = useState(false);
