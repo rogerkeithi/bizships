@@ -24,7 +24,7 @@ export function ThemeSwitcher() {
         <Button
           variant="outline"
           size="icon"
-          className="rounded-full bg-card/80 border-border text-foreground"
+          className="size-9 rounded-full bg-card/90 border-border text-foreground shadow-sm backdrop-blur"
           aria-label="Change theme"
         >
           <Icon className="size-4" />

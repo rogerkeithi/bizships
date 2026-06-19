@@ -13,14 +13,11 @@ import {
   MessageSquare,
   Network,
   X,
-  PlayCircle,
   Users,
 } from "lucide-react";
 
 import { Button } from "@/shared/components/ui/button";
-import { LanguageSwitcher } from "@/shared/components/LanguageSwitcher";
 import { useTranslation } from "@/i18n";
-import { ThemeSwitcher } from "@/shared/components/ThemeSwitcher";
 import { authTokenStorage } from "@/shared/lib/auth-token-storage";
 import { cn } from "@/shared/lib/utils";
 
@@ -336,18 +333,18 @@ export function LandingPageClient() {
           </div>
 
           <div className="flex items-center gap-3">
-            <ThemeSwitcher />
-            <LanguageSwitcher />
-
             <Link
               href="/login"
-              className="hidden sm:inline text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
             >
               {landing.nav.login}
             </Link>
 
-            <Button className="bg-foreground hover:bg-foreground/85 text-background rounded-full px-5 py-2 text-xs font-semibold tracking-wide shadow-sm transition-all">
-              {landing.nav.getStarted}
+            <Button
+              asChild
+              className="hidden bg-foreground hover:bg-foreground/85 text-background rounded-full px-5 py-2 text-xs font-semibold tracking-wide shadow-sm transition-all sm:inline-flex"
+            >
+              <Link href="/signup">{landing.nav.getStarted}</Link>
             </Button>
           </div>
         </nav>
@@ -369,8 +366,11 @@ export function LandingPageClient() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 items-center justify-center w-full max-w-sm">
-            <Button className="w-full sm:w-auto bg-primary hover:bg-primary/85 text-primary-foreground font-semibold px-8 py-6 rounded-full text-base transition-colors shadow-md shadow-primary/20">
-              {landing.hero.primaryAction}
+            <Button
+              asChild
+              className="w-full sm:w-auto bg-primary hover:bg-primary/85 text-primary-foreground font-semibold px-8 py-6 rounded-full text-base transition-colors shadow-md shadow-primary/20"
+            >
+              <Link href="/signup">{landing.hero.primaryAction}</Link>
             </Button>
           </div>
         </section>
@@ -514,38 +514,7 @@ export function LandingPageClient() {
           </div>
         </section>
 
-        <section
-          id="joinUs"
-          className="max-w-6xl mx-auto px-6 mt-40 scroll-mt-28"
-        >
-          <div className="bg-primary rounded-[2.5rem] p-8 md:p-16 text-primary-foreground grid grid-cols-1 md:grid-cols-12 gap-8 items-center shadow-xl shadow-primary/20">
-            <div className="md:col-span-7 space-y-6">
-              <h3 className="text-3xl md:text-5xl font-bold tracking-tight leading-tight">
-                {landing.cta.title}
-              </h3>
-
-              <p className="text-[#dbe8ff] text-sm md:text-base max-w-md">
-                {landing.cta.description}
-              </p>
-
-              <Button className="bg-[#f8fafc] hover:bg-[#dbe8ff] text-primary font-semibold rounded-full px-6 py-5 text-sm">
-                {landing.cta.action}
-              </Button>
-            </div>
-
-            <div className="md:col-span-5 flex justify-center md:justify-end">
-              <div className="w-44 h-44 bg-[#f8fafc] rounded-3xl p-4 flex flex-col items-center justify-between shadow-lg">
-                <div className="w-full h-full bg-[#dbe8ff] rounded-xl border-2 border-dashed border-[#93b4ff] flex items-center justify-center">
-                  <PlayCircle className="w-8 h-8 text-primary" />
-                </div>
-
-                <span className="text-[10px] text-[#64748b] font-medium mt-2 tracking-tight uppercase">
-                  {landing.cta.mockupLabel}
-                </span>
-              </div>
-            </div>
-          </div>
-        </section>
+        <div id="joinUs" className="scroll-mt-28" />
       </main>
 
       <footer className="bg-card border-t border-border mt-32 py-16 text-muted-foreground text-xs">

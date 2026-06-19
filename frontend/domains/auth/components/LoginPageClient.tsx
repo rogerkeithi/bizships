@@ -13,6 +13,7 @@ import {
   isProfileComplete,
   userService,
 } from "@/domains/user/services/user-service";
+import { useTranslation } from "@/i18n";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 
@@ -44,6 +45,7 @@ const getLoginErrorMessage = (error: unknown) => {
 export function LoginPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { auth } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -93,25 +95,25 @@ export function LoginPageClient() {
       <section className="w-full max-w-[318px] rounded-[22px] border border-[#e2e8f0] bg-white px-8 py-10 shadow-sm dark:border-[#2d3c54] dark:bg-[#132238]">
         <Link
           href="/"
-          className="mx-auto mb-8 flex w-fit items-center gap-2 text-xs font-bold"
+          className="mx-auto mb-8 flex w-fit items-center gap-2.5 text-sm font-bold"
         >
           <Image
             src="/t-black-logo.svg"
             alt=""
-            width={28}
-            height={28}
-            className="size-7 dark:invert"
+            width={34}
+            height={34}
+            className="size-8 dark:invert"
             aria-hidden="true"
           />
-          Bizships
+          {auth.brand}
         </Link>
 
         <div className="mb-8 text-center">
           <h1 className="text-[22px] font-black tracking-tight">
-            Bem-vindo de volta
+            {auth.login.title}
           </h1>
           <p className="mt-2 text-[11px] text-[#64748b] dark:text-[#94a3b8]">
-            Acesse sua conta corporativa Bizships
+            {auth.login.description}
           </p>
         </div>
 
@@ -121,7 +123,7 @@ export function LoginPageClient() {
               htmlFor="email"
               className="text-[9px] font-black uppercase tracking-[0.08em]"
             >
-              E-mail corporativo
+              {auth.common.corporateEmail}
             </label>
             <Input
               id="email"
@@ -129,7 +131,7 @@ export function LoginPageClient() {
               autoComplete="email"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
-              placeholder="nome@empresa.com"
+              placeholder={auth.common.emailPlaceholder}
               className="h-[38px] rounded-full border-[#cbd5e1] bg-[#f7f8fc] px-4 text-xs dark:border-[#2d3c54] dark:bg-[#1d2d46]"
               aria-invalid={Boolean(errorMessage)}
               disabled={isSubmitting}
@@ -142,13 +144,13 @@ export function LoginPageClient() {
                 htmlFor="password"
                 className="text-[9px] font-black uppercase tracking-[0.08em]"
               >
-                Senha
+                {auth.common.password}
               </label>
               <Link
                 href="/forgot-password"
                 className="text-[9px] font-black text-primary hover:text-primary/80"
               >
-                Esqueci a senha
+                {auth.login.forgotPassword}
               </Link>
             </div>
 
@@ -179,7 +181,7 @@ export function LoginPageClient() {
             {isSubmitting ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
-              "Entrar"
+              auth.login.submit
             )}
           </Button>
         </form>
@@ -187,7 +189,7 @@ export function LoginPageClient() {
         <div className="my-7 flex items-center gap-3">
           <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-[#2d3c54]" />
           <span className="text-[8px] font-bold uppercase tracking-[0.28em] text-[#94a3b8]">
-            ou continue com
+            {auth.login.divider}
           </span>
           <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-[#2d3c54]" />
         </div>
@@ -213,9 +215,9 @@ export function LoginPageClient() {
         </div>
 
         <p className="mt-8 text-center text-[11px] text-[#64748b] dark:text-[#94a3b8]">
-          Nao tem uma conta?{" "}
+          {auth.login.noAccount}{" "}
           <Link href="/signup" className="font-black text-primary">
-            Cadastre-se agora
+            {auth.login.signup}
           </Link>
         </p>
       </section>

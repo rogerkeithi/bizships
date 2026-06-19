@@ -11,6 +11,7 @@ import {
   getApiErrorCode,
   registrationService,
 } from "@/domains/auth/services/registration-service";
+import { useTranslation } from "@/i18n";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 
@@ -29,6 +30,7 @@ const getMessage = (error: unknown) => {
 };
 
 export function SignupPageClient() {
+  const { auth } = useTranslation();
   const [email, setEmail] = useState("");
   const [confirmedEmail, setConfirmedEmail] = useState("");
   const [status, setStatus] = useState<"form" | "check-email">("form");
@@ -90,8 +92,8 @@ export function SignupPageClient() {
   if (status === "check-email") {
     return (
       <AuthCard
-        title="Verifique seu e-mail"
-        description="Enviamos um link de confirmacao. Acesse sua caixa de entrada e clique no link para continuar."
+        title={auth.signup.checkEmailTitle}
+        description={auth.signup.checkEmailDescription}
       >
         <div className="space-y-5 text-center">
           <p className="rounded-2xl bg-[#f7f8fc] px-4 py-3 text-xs text-[#64748b] dark:bg-[#1d2d46] dark:text-[#94a3b8]">
@@ -112,7 +114,7 @@ export function SignupPageClient() {
             {isResending ? (
               <Loader2 className="size-4 animate-spin" />
             ) : (
-              "Reenviar link"
+              auth.signup.resendLink
             )}
           </Button>
 
@@ -120,7 +122,7 @@ export function SignupPageClient() {
             href="/login"
             className="block text-[11px] font-black text-primary"
           >
-            Ir para login
+            {auth.common.goToLogin}
           </Link>
         </div>
       </AuthCard>
@@ -129,8 +131,8 @@ export function SignupPageClient() {
 
   return (
     <AuthCard
-      title="Crie sua conta"
-      description="Informe seu e-mail corporativo para entrar na rede Bizships."
+      title={auth.signup.title}
+      description={auth.signup.description}
     >
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
@@ -138,7 +140,7 @@ export function SignupPageClient() {
             htmlFor="email"
             className="text-[9px] font-black uppercase tracking-[0.08em]"
           >
-            E-mail corporativo
+            {auth.common.corporateEmail}
           </label>
           <Input
             id="email"
@@ -146,7 +148,7 @@ export function SignupPageClient() {
             autoComplete="email"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
-            placeholder="nome@empresa.com"
+            placeholder={auth.common.emailPlaceholder}
             className="h-[38px] rounded-full border-[#cbd5e1] bg-[#f7f8fc] px-4 text-xs dark:border-[#2d3c54] dark:bg-[#1d2d46]"
             aria-invalid={Boolean(message)}
             disabled={isSubmitting}
@@ -167,15 +169,15 @@ export function SignupPageClient() {
           {isSubmitting ? (
             <Loader2 className="size-4 animate-spin" />
           ) : (
-            "Continuar"
+            auth.common.continue
           )}
         </Button>
       </form>
 
       <p className="mt-8 text-center text-[11px] text-[#64748b] dark:text-[#94a3b8]">
-        Ja tem conta?{" "}
+        {auth.signup.hasAccount}{" "}
         <Link href="/login" className="font-black text-primary">
-          Entrar agora
+          {auth.signup.loginNow}
         </Link>
       </p>
     </AuthCard>

@@ -12,6 +12,7 @@ import {
   getApiErrorCode,
   registrationService,
 } from "@/domains/auth/services/registration-service";
+import { useTranslation } from "@/i18n";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
 
@@ -60,6 +61,7 @@ const getMessage = (error: unknown) => {
 export function ConfirmEmailPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { auth } = useTranslation();
   const tokenId = useMemo(() => searchParams.get("tokenId"), [searchParams]);
   const setupTokenFromUrl = useMemo(
     () => searchParams.get("setupPasswordToken"),
@@ -232,8 +234,8 @@ export function ConfirmEmailPageClient() {
   if (step === "loading") {
     return (
       <AuthCard
-        title="Confirmando e-mail"
-        description="Estamos validando seu link de confirmacao."
+        title={auth.confirm.loadingTitle}
+        description={auth.confirm.loadingDescription}
       >
         <div className="flex justify-center py-8">
           <Loader2 className="size-6 animate-spin text-primary" />
@@ -245,8 +247,8 @@ export function ConfirmEmailPageClient() {
   if (step === "expired-confirm") {
     return (
       <AuthCard
-        title="Link expirado"
-        description="Informe seu e-mail para receber um novo link de confirmacao."
+        title={auth.confirm.expiredTitle}
+        description={auth.confirm.expiredDescription}
       >
         <form onSubmit={sendConfirmAgain} className="space-y-4">
           <EmailField
@@ -255,7 +257,9 @@ export function ConfirmEmailPageClient() {
             disabled={isSubmitting}
           />
           <Feedback message={message} />
-          <SubmitButton loading={isSubmitting}>Reenviar link</SubmitButton>
+          <SubmitButton loading={isSubmitting}>
+            {auth.confirm.resendLink}
+          </SubmitButton>
         </form>
       </AuthCard>
     );
@@ -264,8 +268,8 @@ export function ConfirmEmailPageClient() {
   if (step === "request-code") {
     return (
       <AuthCard
-        title="Defina sua senha"
-        description="Informe seu e-mail para receber um codigo de 6 numeros e gerar um novo token."
+        title={auth.confirm.requestCodeTitle}
+        description={auth.confirm.requestCodeDescription}
       >
         <form onSubmit={sendCode} className="space-y-4">
           <EmailField
@@ -274,7 +278,9 @@ export function ConfirmEmailPageClient() {
             disabled={isSubmitting}
           />
           <Feedback message={message} />
-          <SubmitButton loading={isSubmitting}>Enviar codigo</SubmitButton>
+          <SubmitButton loading={isSubmitting}>
+            {auth.confirm.sendCode}
+          </SubmitButton>
         </form>
       </AuthCard>
     );
@@ -283,8 +289,8 @@ export function ConfirmEmailPageClient() {
   if (step === "verify-code") {
     return (
       <AuthCard
-        title="Codigo de verificacao"
-        description="Digite o codigo de 6 numeros enviado para seu e-mail."
+        title={auth.confirm.verifyCodeTitle}
+        description={auth.confirm.verifyCodeDescription}
       >
         <form onSubmit={verifyCode} className="space-y-4">
           <div className="space-y-2">
@@ -292,7 +298,7 @@ export function ConfirmEmailPageClient() {
               htmlFor="code"
               className="text-[9px] font-black uppercase tracking-[0.08em]"
             >
-              Codigo
+              {auth.confirm.code}
             </label>
             <Input
               id="code"
@@ -306,7 +312,9 @@ export function ConfirmEmailPageClient() {
             />
           </div>
           <Feedback message={message} />
-          <SubmitButton loading={isSubmitting}>Validar codigo</SubmitButton>
+          <SubmitButton loading={isSubmitting}>
+            {auth.confirm.validateCode}
+          </SubmitButton>
         </form>
       </AuthCard>
     );
@@ -315,26 +323,28 @@ export function ConfirmEmailPageClient() {
   if (step === "setup-password") {
     return (
       <AuthCard
-        title="Crie sua senha"
-        description="Use uma senha forte para proteger sua conta Bizships."
+        title={auth.confirm.setupPasswordTitle}
+        description={auth.confirm.setupPasswordDescription}
       >
         <form onSubmit={setupPassword} className="space-y-4">
           <PasswordField
             id="password"
-            label="Senha"
+            label={auth.common.password}
             value={password}
             onChange={setPassword}
             disabled={isSubmitting}
           />
           <PasswordField
             id="confirm-password"
-            label="Confirmar senha"
+            label={auth.confirm.confirmPassword}
             value={confirmPassword}
             onChange={setConfirmPassword}
             disabled={isSubmitting}
           />
           <Feedback message={message} />
-          <SubmitButton loading={isSubmitting}>Definir senha</SubmitButton>
+          <SubmitButton loading={isSubmitting}>
+            {auth.confirm.definePassword}
+          </SubmitButton>
         </form>
       </AuthCard>
     );
@@ -343,15 +353,15 @@ export function ConfirmEmailPageClient() {
   if (step === "success") {
     return (
       <AuthCard
-        title="Registro finalizado 🎉"
-        description="Sua senha foi definida com sucesso. Agora voce ja pode entrar"
+        title={auth.confirm.successTitle}
+        description={auth.confirm.successDescription}
       >
         <Button
           type="button"
           className="h-[38px] w-full rounded-full bg-primary text-[10px] font-black uppercase tracking-wide text-white"
           onClick={() => router.replace("/login")}
         >
-          Ir para login
+          {auth.common.goToLogin}
         </Button>
       </AuthCard>
     );
@@ -360,14 +370,14 @@ export function ConfirmEmailPageClient() {
   if (step === "already-confirmed") {
     return (
       <AuthCard
-        title="E-mail ja confirmado"
-        description="Esta conta ja foi confirmada. Entre com sua senha para continuar."
+        title={auth.confirm.alreadyConfirmedTitle}
+        description={auth.confirm.alreadyConfirmedDescription}
       >
         <Link
           href="/login"
           className="block text-center text-xs font-black text-primary"
         >
-          Ir para login
+          {auth.common.goToLogin}
         </Link>
       </AuthCard>
     );
@@ -375,14 +385,14 @@ export function ConfirmEmailPageClient() {
 
   return (
     <AuthCard
-      title="Link invalido"
-      description="Nao foi possivel validar este link. Solicite um novo acesso ou tente novamente."
+      title={auth.confirm.invalidTitle}
+      description={auth.confirm.invalidDescription}
     >
       <Link
         href="/signup"
         className="block text-center text-xs font-black text-primary"
       >
-        Voltar ao cadastro
+        {auth.confirm.backToSignup}
       </Link>
     </AuthCard>
   );
@@ -397,13 +407,15 @@ function EmailField({
   setEmail: (email: string) => void;
   disabled: boolean;
 }) {
+  const { auth } = useTranslation();
+
   return (
     <div className="space-y-2">
       <label
         htmlFor="email"
         className="text-[9px] font-black uppercase tracking-[0.08em]"
       >
-        E-mail corporativo
+        {auth.common.corporateEmail}
       </label>
       <Input
         id="email"
@@ -411,7 +423,7 @@ function EmailField({
         autoComplete="email"
         value={email}
         onChange={(event) => setEmail(event.target.value)}
-        placeholder="nome@empresa.com"
+        placeholder={auth.common.emailPlaceholder}
         className="h-[38px] rounded-full border-[#cbd5e1] bg-[#f7f8fc] px-4 text-xs dark:border-[#2d3c54] dark:bg-[#1d2d46]"
         disabled={disabled}
       />

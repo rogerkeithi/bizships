@@ -1,23 +1,18 @@
 "use client";
 
-import { Bell, Laptop, LogOut, Moon, Search, Sun } from "lucide-react";
+import { Bell, LogOut, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { useI18n } from "@/i18n";
-import type { Language } from "@/i18n";
 import { Button } from "@/shared/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
-  DropdownMenuRadioGroup,
-  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
-import { type Theme, useTheme } from "@/shared/providers/theme-provider";
 
 interface AuthenticatedNavbarProps {
   userName: string;
@@ -30,12 +25,7 @@ export function AuthenticatedNavbar({
   isLoggingOut = false,
   onLogout,
 }: AuthenticatedNavbarProps) {
-  const { theme, setTheme } = useTheme();
-  const { language, setLanguage } = useI18n();
   const userInitial = userName.slice(0, 1).toUpperCase();
-  const handleThemeChange = (value: string) => setTheme(value as Theme);
-  const handleLanguageChange = (value: string) =>
-    setLanguage(value as Language);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
@@ -87,38 +77,6 @@ export function AuthenticatedNavbar({
                   Conectado
                 </span>
               </DropdownMenuLabel>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuLabel>Tema</DropdownMenuLabel>
-              <DropdownMenuRadioGroup
-                value={theme}
-                onValueChange={handleThemeChange}
-              >
-                <DropdownMenuRadioItem value="light">
-                  <Sun className="size-4" />
-                  Claro
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="dark">
-                  <Moon className="size-4" />
-                  Escuro
-                </DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="system">
-                  <Laptop className="size-4" />
-                  Sistema
-                </DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
-
-              <DropdownMenuSeparator />
-
-              <DropdownMenuLabel>Idioma</DropdownMenuLabel>
-              <DropdownMenuRadioGroup
-                value={language}
-                onValueChange={handleLanguageChange}
-              >
-                <DropdownMenuRadioItem value="pt">Portugues</DropdownMenuRadioItem>
-                <DropdownMenuRadioItem value="en">English</DropdownMenuRadioItem>
-              </DropdownMenuRadioGroup>
 
               <DropdownMenuSeparator />
 

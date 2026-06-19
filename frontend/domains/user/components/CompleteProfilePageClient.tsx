@@ -13,16 +13,22 @@ import {
   userService,
   type FinishRegistrationPayload,
 } from "@/domains/user/services/user-service";
+import { useTranslation } from "@/i18n";
 import { Button } from "@/shared/components/ui/button";
 import { Input } from "@/shared/components/ui/input";
-import { authTokenStorage, type AuthUser } from "@/shared/lib/auth-token-storage";
+import {
+  authTokenStorage,
+  type AuthUser,
+} from "@/shared/lib/auth-token-storage";
+
+type CompleteProfileStep = "personal" | "address";
 
 const optionalText = z
   .string()
   .trim()
   .transform((value) => (value.length > 0 ? value : undefined));
 
-const completeProfileSchema = z.object({
+const personalProfileSchema = z.object({
   firstName: z.string().trim().min(2, "Informe seu primeiro nome."),
   lastName: z.string().trim().min(2, "Informe seu sobrenome."),
   socialName: optionalText.optional(),
@@ -31,15 +37,15 @@ const completeProfileSchema = z.object({
     .string()
     .trim()
     .regex(/^\+\d{10,15}$/, "Use o telefone com DDI. Ex: +5511999999999."),
-  country: z.string().trim().length(2, "Use o codigo do pais com 2 letras."),
-  postalCode: z.string().trim().min(3, "Informe o CEP."),
-  city: z.string().trim().min(2, "Informe a cidade."),
-  street: z.string().trim().min(2, "Informe a rua."),
-  number: z.string().trim().min(1, "Informe o numero."),
-  state: optionalText.optional(),
-  district: optionalText.optional(),
-  complement: optionalText.optional(),
 });
+
+const addressProfileSchema = z.object({
+  country: z.string().trim().length(2, "Use o codigo do pais com 2 letras."),
+  state: z.string().trim().min(2, "Informe o estado."),
+  city: z.string().trim().min(2, "Informe a cidade."),
+});
+
+const completeProfileSchema = personalProfileSchema.merge(addressProfileSchema);
 
 type CompleteProfileForm = z.infer<typeof completeProfileSchema>;
 
@@ -50,13 +56,8 @@ const initialForm: CompleteProfileForm = {
   birthDate: "",
   phone: "",
   country: "BR",
-  postalCode: "",
   city: "",
-  street: "",
-  number: "",
   state: "",
-  district: "",
-  complement: "",
 };
 
 const getErrorMessage = (error: unknown) => {
@@ -73,11 +74,13 @@ const getErrorMessage = (error: unknown) => {
 
 export function CompleteProfilePageClient() {
   const router = useRouter();
+  const { auth } = useTranslation();
   const [user, setUser] = useState<AuthUser | null>(null);
   const [form, setForm] = useState<CompleteProfileForm>(initialForm);
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [step, setStep] = useState<CompleteProfileStep>("personal");
 
   useEffect(() => {
     let isActive = true;
@@ -144,6 +147,18 @@ export function CompleteProfilePageClient() {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage("");
+
+    if (step === "personal") {
+      try {
+        personalProfileSchema.parse(form);
+        setStep("address");
+      } catch (error) {
+        setErrorMessage(getErrorMessage(error));
+      }
+
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -162,13 +177,11 @@ export function CompleteProfilePageClient() {
         birthDate: parsed.birthDate,
         address: {
           country: parsed.country.toUpperCase(),
-          postalCode: parsed.postalCode,
+          postalCode: "00000000",
           city: parsed.city,
-          street: parsed.street,
-          number: parsed.number,
+          street: "Nao informado",
+          number: "S/N",
           state: parsed.state,
-          district: parsed.district,
-          complement: parsed.complement,
         },
       };
 
@@ -195,137 +208,108 @@ export function CompleteProfilePageClient() {
       <section className="w-full max-w-[660px] rounded-[22px] border border-[#e2e8f0] bg-white px-6 py-8 shadow-sm dark:border-[#2d3c54] dark:bg-[#132238] sm:px-8">
         <Link
           href="/home"
-          className="mx-auto mb-7 flex w-fit items-center gap-2 text-xs font-bold"
+          className="mx-auto mb-7 flex w-fit items-center gap-2.5 text-sm font-bold"
         >
           <Image
             src="/t-black-logo.svg"
             alt=""
-            width={28}
-            height={28}
-            className="size-7 dark:invert"
+            width={34}
+            height={34}
+            className="size-8 dark:invert"
             aria-hidden="true"
           />
-          Bizships
+          {auth.brand}
         </Link>
 
         <div className="mb-7 text-center">
           <h1 className="text-[22px] font-black tracking-tight">
-            Finalize seu cadastro
+            {auth.completeProfile.title}
           </h1>
           <p className="mx-auto mt-2 max-w-sm text-[11px] leading-5 text-[#64748b] dark:text-[#94a3b8]">
-            Complete seus dados pessoais para liberar sua pagina principal e
-            comecar a construir seu networking.
+            {step === "personal"
+              ? auth.completeProfile.personalDescription
+              : auth.completeProfile.addressDescription}
           </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <ProfileField
-              id="firstName"
-              label="Primeiro nome"
-              value={form.firstName}
-              onChange={updateField("firstName")}
-              disabled={isSubmitting}
-            />
-            <ProfileField
-              id="lastName"
-              label="Sobrenome"
-              value={form.lastName}
-              onChange={updateField("lastName")}
-              disabled={isSubmitting}
-            />
-            <ProfileField
-              id="socialName"
-              label="Nome social"
-              value={form.socialName ?? ""}
-              onChange={updateField("socialName")}
-              disabled={isSubmitting}
-              optional
-            />
-            <ProfileField
-              id="birthDate"
-              label="Data de nascimento"
-              type="date"
-              value={form.birthDate}
-              onChange={updateField("birthDate")}
-              disabled={isSubmitting}
-            />
-            <ProfileField
-              id="phone"
-              label="Telefone"
-              value={form.phone}
-              onChange={updateField("phone")}
-              placeholder="+5511999999999"
-              disabled={isSubmitting}
-            />
-            <ProfileField
-              id="country"
-              label="Pais"
-              value={form.country}
-              onChange={updateField("country")}
-              maxLength={2}
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-[0.8fr_1.2fr_0.55fr]">
-            <ProfileField
-              id="postalCode"
-              label="CEP"
-              value={form.postalCode}
-              onChange={updateField("postalCode")}
-              disabled={isSubmitting}
-            />
-            <ProfileField
-              id="street"
-              label="Rua"
-              value={form.street}
-              onChange={updateField("street")}
-              disabled={isSubmitting}
-            />
-            <ProfileField
-              id="number"
-              label="Numero"
-              value={form.number}
-              onChange={updateField("number")}
-              disabled={isSubmitting}
-            />
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-3">
-            <ProfileField
-              id="city"
-              label="Cidade"
-              value={form.city}
-              onChange={updateField("city")}
-              disabled={isSubmitting}
-            />
-            <ProfileField
-              id="state"
-              label="Estado"
-              value={form.state ?? ""}
-              onChange={updateField("state")}
-              disabled={isSubmitting}
-              optional
-            />
-            <ProfileField
-              id="district"
-              label="Bairro"
-              value={form.district ?? ""}
-              onChange={updateField("district")}
-              disabled={isSubmitting}
-              optional
-            />
-          </div>
-
-          <ProfileField
-            id="complement"
-            label="Complemento"
-            value={form.complement ?? ""}
-            onChange={updateField("complement")}
-            disabled={isSubmitting}
-            optional
+          <StepIndicator
+            currentStep={step}
+            labels={{
+              personal: auth.completeProfile.personalStep,
+              address: auth.completeProfile.addressStep,
+            }}
           />
+
+          {step === "personal" ? (
+            <div className="grid gap-4 sm:grid-cols-2">
+              <ProfileField
+                id="firstName"
+                label={auth.completeProfile.firstName}
+                value={form.firstName}
+                onChange={updateField("firstName")}
+                disabled={isSubmitting}
+              />
+              <ProfileField
+                id="lastName"
+                label={auth.completeProfile.lastName}
+                value={form.lastName}
+                onChange={updateField("lastName")}
+                disabled={isSubmitting}
+              />
+              <ProfileField
+                id="socialName"
+                label={auth.completeProfile.socialName}
+                value={form.socialName ?? ""}
+                onChange={updateField("socialName")}
+                disabled={isSubmitting}
+                optional
+              />
+              <ProfileField
+                id="birthDate"
+                label={auth.completeProfile.birthDate}
+                type="date"
+                value={form.birthDate}
+                onChange={updateField("birthDate")}
+                disabled={isSubmitting}
+              />
+              <div className="sm:col-span-2">
+                <ProfileField
+                  id="phone"
+                  label={auth.completeProfile.phone}
+                  value={form.phone}
+                  onChange={updateField("phone")}
+                  placeholder="+5511999999999"
+                  disabled={isSubmitting}
+                />
+              </div>
+            </div>
+          ) : (
+            <div className="grid gap-4 sm:grid-cols-3">
+              <ProfileField
+                id="country"
+                label={auth.completeProfile.country}
+                value={form.country}
+                onChange={updateField("country")}
+                maxLength={2}
+                disabled={isSubmitting}
+              />
+              <ProfileField
+                id="state"
+                label={auth.completeProfile.state}
+                value={form.state}
+                onChange={updateField("state")}
+                disabled={isSubmitting}
+              />
+              <ProfileField
+                id="city"
+                label={auth.completeProfile.city}
+                value={form.city}
+                onChange={updateField("city")}
+                disabled={isSubmitting}
+              />
+            </div>
+          )}
 
           {errorMessage ? (
             <p className="rounded-2xl border border-destructive/30 bg-destructive/10 px-3 py-2 text-center text-[11px] text-destructive">
@@ -333,20 +317,70 @@ export function CompleteProfilePageClient() {
             </p>
           ) : null}
 
-          <Button
-            type="submit"
-            className="h-[38px] w-full rounded-full bg-primary text-[10px] font-black uppercase tracking-wide text-white shadow-lg shadow-primary/25 hover:bg-primary/90"
-            disabled={isSubmitting}
-          >
-            {isSubmitting ? (
-              <Loader2 className="size-4 animate-spin" />
-            ) : (
-              "Finalizar cadastro"
-            )}
-          </Button>
+          <div className="flex flex-col-reverse gap-3 sm:flex-row">
+            {step === "address" ? (
+              <Button
+                type="button"
+                variant="outline"
+                className="h-[38px] flex-1 rounded-full"
+                onClick={() => setStep("personal")}
+                disabled={isSubmitting}
+              >
+                {auth.common.back}
+              </Button>
+            ) : null}
+
+            <Button
+              type="submit"
+              className="h-[38px] flex-1 rounded-full bg-primary text-[10px] font-black uppercase tracking-wide text-white shadow-lg shadow-primary/25 hover:bg-primary/90"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : step === "personal" ? (
+                auth.common.continue
+              ) : (
+                auth.completeProfile.submit
+              )}
+            </Button>
+          </div>
         </form>
       </section>
     </main>
+  );
+}
+
+function StepIndicator({
+  currentStep,
+  labels,
+}: {
+  currentStep: CompleteProfileStep;
+  labels: Record<CompleteProfileStep, string>;
+}) {
+  const steps: Array<{ id: CompleteProfileStep; label: string }> = [
+    { id: "personal", label: labels.personal },
+    { id: "address", label: labels.address },
+  ];
+
+  return (
+    <div className="grid grid-cols-2 gap-2 rounded-full bg-[#f7f8fc] p-1 dark:bg-[#1d2d46]">
+      {steps.map((step) => {
+        const isActive = step.id === currentStep;
+
+        return (
+          <div
+            key={step.id}
+            className={`rounded-full px-3 py-2 text-center text-[10px] font-black uppercase ${
+              isActive
+                ? "bg-primary text-white shadow-sm"
+                : "text-[#64748b] dark:text-[#94a3b8]"
+            }`}
+          >
+            {step.label}
+          </div>
+        );
+      })}
+    </div>
   );
 }
 
@@ -360,6 +394,8 @@ function ProfileField({
   label: string;
   optional?: boolean;
 } & React.ComponentProps<typeof Input>) {
+  const { auth } = useTranslation();
+
   return (
     <div className="space-y-2">
       <label
@@ -368,7 +404,9 @@ function ProfileField({
       >
         <span>{label}</span>
         {optional ? (
-          <span className="text-[8px] text-[#94a3b8]">Opcional</span>
+          <span className="text-[8px] text-[#94a3b8]">
+            {auth.common.optional}
+          </span>
         ) : null}
       </label>
       <Input

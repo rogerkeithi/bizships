@@ -3,11 +3,11 @@ import { Country } from "./Country";
 export class Address {
   constructor(
     private readonly _country: Country,
-    private readonly _postalCode: string,
     private readonly _city: string,
-    private readonly _street: string,
-    private readonly _number: string,
-    private readonly _state?: string,
+    private readonly _state: string,
+    private readonly _postalCode?: string,
+    private readonly _street?: string,
+    private readonly _number?: string,
     private readonly _district?: string,
     private readonly _complement?: string,
   ) {
@@ -39,20 +39,12 @@ export class Address {
   }
 
   private validate(): void {
-    if (!this._street.trim()) {
-      throw new Error("INVALID_STREET");
-    }
-
     if (!this._city.trim()) {
       throw new Error("INVALID_CITY");
     }
 
-    if (!this._number.trim()) {
-      throw new Error("INVALID_NUMBER");
-    }
-
-    if (!this._postalCode.trim()) {
-      throw new Error("INVALID_POSTAL_CODE");
+    if (!this._state.trim()) {
+      throw new Error("INVALID_STATE");
     }
   }
 
@@ -60,24 +52,24 @@ export class Address {
     return this._country;
   }
 
-  get postalCode(): string {
-    return this._postalCode;
-  }
-
   get city(): string {
     return this._city;
   }
 
-  get street(): string {
+  get state(): string {
+    return this._state;
+  }
+
+  get postalCode(): string | undefined {
+    return this._postalCode;
+  }
+
+  get street(): string | undefined {
     return this._street;
   }
 
-  get number(): string {
+  get number(): string | undefined {
     return this._number;
-  }
-
-  get state(): string | undefined {
-    return this._state;
   }
 
   get district(): string | undefined {

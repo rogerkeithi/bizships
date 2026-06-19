@@ -6,6 +6,7 @@ import "./globals.css";
 import { cn } from "@/shared/lib/utils";
 import { ThemeProvider } from "@/shared/providers/theme-provider";
 import { I18nProvider } from "@/i18n";
+import { SystemPreferences } from "@/shared/components/SystemPreferences";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -47,7 +48,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <ThemeProvider>
-          <I18nProvider>{children}</I18nProvider>
+          <I18nProvider>
+            <SystemPreferences />
+            {children}
+          </I18nProvider>
         </ThemeProvider>
       </body>
     </html>

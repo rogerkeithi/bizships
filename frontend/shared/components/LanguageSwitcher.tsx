@@ -17,7 +17,10 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu modal={false}>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">
+        <Button
+          variant="outline"
+          className="h-9 rounded-full bg-card/90 px-3 text-xs font-bold shadow-sm backdrop-blur"
+        >
           <Globe className="size-4" />
           {isReady ? language.toUpperCase() : "--"}
         </Button>
