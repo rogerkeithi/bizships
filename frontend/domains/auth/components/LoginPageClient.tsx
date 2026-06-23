@@ -317,7 +317,9 @@ export function LoginPageClient() {
           {GOOGLE_CLIENT_ID ? (
             <div
               ref={googleButtonRef}
-              className={isGoogleSubmitting ? "pointer-events-none opacity-60" : ""}
+              className={`h-[44px] w-[254px] overflow-hidden rounded-full bg-transparent ${
+                isGoogleSubmitting ? "pointer-events-none opacity-60" : ""
+              }`}
             />
           ) : (
             <Button
