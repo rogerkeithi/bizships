@@ -20,6 +20,9 @@ export class User {
   private _phone?: Phone;
   private _phoneVerifiedAt?: Date;
   private _address?: Address;
+  private _googleId?: string;
+  private _avatarUrl?: string;
+  private _authProvider?: string;
   private _deactivatedAt?: Date;
   private _createdAt?: Date;
   private _updatedAt?: Date;
@@ -39,6 +42,9 @@ export class User {
     this._phone = props.phone;
     this._phoneVerifiedAt = props.phoneVerifiedAt;
     this._address = props.address;
+    this._googleId = props.googleId;
+    this._avatarUrl = props.avatarUrl;
+    this._authProvider = props.authProvider;
     this._deactivatedAt = props.deactivatedAt;
     this._createdAt = props.createdAt;
     this._updatedAt = props.updatedAt;
@@ -89,6 +95,24 @@ export class User {
     if (data.socialName) this._socialName = data.socialName;
   }
 
+  public linkGoogleAccount(data: {
+    googleId: string;
+    name?: string;
+    avatarUrl?: string;
+    authProvider?: string;
+  }) {
+    this._googleId = data.googleId;
+    this._avatarUrl = data.avatarUrl;
+    this._authProvider = data.authProvider ?? "google";
+    this._isConfirmed = true;
+
+    if (data.name && (!this._firstName || !this._lastName)) {
+      const [firstName, ...lastNameParts] = data.name.trim().split(/\s+/);
+      this._firstName = this._firstName ?? firstName;
+      this._lastName = this._lastName ?? lastNameParts.join(" ");
+    }
+  }
+
   get email(): Email {
     return this._email;
   }
@@ -137,6 +161,18 @@ export class User {
     return this._address;
   }
 
+  get googleId(): string | undefined {
+    return this._googleId;
+  }
+
+  get avatarUrl(): string | undefined {
+    return this._avatarUrl;
+  }
+
+  get authProvider(): string | undefined {
+    return this._authProvider;
+  }
+
   get deactivatedAt(): Date | undefined {
     return this._deactivatedAt;
   }
@@ -169,6 +205,10 @@ interface UserProps {
   phoneVerifiedAt?: Date;
 
   address?: Address;
+
+  googleId?: string;
+  avatarUrl?: string;
+  authProvider?: string;
 
   status: boolean;
   deactivatedAt?: Date;

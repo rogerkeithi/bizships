@@ -73,6 +73,18 @@ export function ConfirmEmailPageClient() {
     () => searchParams.get("resend") === "1",
     [searchParams],
   );
+  const redirectAfterSuccess = useMemo(() => {
+    const requestedRedirect = searchParams.get("redirectTo");
+
+    if (
+      !requestedRedirect?.startsWith("/") ||
+      requestedRedirect.startsWith("//")
+    ) {
+      return "/login";
+    }
+
+    return requestedRedirect;
+  }, [searchParams]);
   const [step, setStep] = useState<Step>("loading");
   const [email, setEmail] = useState("");
   const [code, setCode] = useState("");
@@ -431,9 +443,11 @@ export function ConfirmEmailPageClient() {
         <Button
           type="button"
           className="h-[38px] w-full rounded-full bg-primary text-[10px] font-black uppercase tracking-wide text-white"
-          onClick={() => router.replace("/login")}
+          onClick={() => router.replace(redirectAfterSuccess)}
         >
-          {auth.common.goToLogin}
+          {redirectAfterSuccess === "/login"
+            ? auth.common.goToLogin
+            : auth.common.continue}
         </Button>
       </AuthCard>
     );

@@ -50,6 +50,13 @@ const UserSchema = new mongoose.Schema(
     birthDate: Date,
     phone: String,
     phoneVerifiedAt: Date,
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true,
+    },
+    avatarUrl: String,
+    authProvider: String,
     passwordHash: String,
     deactivatedAt: Date,
     address: AddressSchema,

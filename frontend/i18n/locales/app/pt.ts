@@ -7,6 +7,13 @@ export const appPt = {
     search: "Buscar conexoes, empresas e comunidades",
     connected: "Conectado",
     viewProfile: "Ver perfil",
+    theme: "Tema",
+    light: "Claro",
+    dark: "Escuro",
+    system: "Sistema",
+    language: "Idioma",
+    portuguese: "Portugues",
+    english: "English",
     logout: "Sair",
   },
   home: {

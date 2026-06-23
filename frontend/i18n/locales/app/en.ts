@@ -7,6 +7,13 @@ const appEn = {
     search: "Search connections, companies, and communities",
     connected: "Connected",
     viewProfile: "View profile",
+    theme: "Theme",
+    light: "Light",
+    dark: "Dark",
+    system: "System",
+    language: "Language",
+    portuguese: "Portugues",
+    english: "English",
     logout: "Log out",
   },
   home: {

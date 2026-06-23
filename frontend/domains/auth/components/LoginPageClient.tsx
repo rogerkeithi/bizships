@@ -4,8 +4,9 @@ import { AxiosError } from "axios";
 import { Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useMemo, useState } from "react";
+import { FormEvent, useCallback, useMemo, useRef, useState } from "react";
 import { z } from "zod";
 
 import { getApiErrorCode } from "@/domains/auth/services/registration-service";
@@ -50,14 +51,40 @@ const isUnconfirmedUserError = (error: unknown) => {
   return normalizedCode === "USER_NOT_CONFIRMED";
 };
 
+const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+
+const getEmailFromGoogleCredential = (credential: string) => {
+  const [, payload] = credential.split(".");
+
+  if (!payload) {
+    return null;
+  }
+
+  try {
+    const normalizedPayload = payload
+      .replace(/-/g, "+")
+      .replace(/_/g, "/")
+      .padEnd(Math.ceil(payload.length / 4) * 4, "=");
+    const decodedPayload = JSON.parse(window.atob(normalizedPayload));
+
+    return typeof decodedPayload.email === "string"
+      ? decodedPayload.email
+      : null;
+  } catch {
+    return null;
+  }
+};
+
 export function LoginPageClient() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { auth } = useTranslation();
+  const googleButtonRef = useRef<HTMLDivElement | null>(null);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isGoogleSubmitting, setIsGoogleSubmitting] = useState(false);
   const redirectTo = useMemo(() => {
     const requestedRedirect = searchParams.get("redirectTo");
 
@@ -71,6 +98,84 @@ export function LoginPageClient() {
     return requestedRedirect;
   }, [searchParams]);
 
+  const redirectAfterLogin = useCallback(
+    async (loginEmail: string) => {
+      const user = await userService.syncAuthUser(loginEmail);
+
+      if (!isProfileComplete(user)) {
+        router.replace("/complete-profile");
+        return;
+      }
+
+      router.replace(redirectTo === "/complete-profile" ? "/home" : redirectTo);
+    },
+    [redirectTo, router],
+  );
+
+  const handleGoogleCredential = useCallback(
+    async (credential?: string) => {
+      setErrorMessage("");
+
+      if (!credential) {
+        setErrorMessage("Nao foi possivel obter a credencial do Google.");
+        return;
+      }
+
+      const googleEmail = getEmailFromGoogleCredential(credential);
+
+      if (!googleEmail) {
+        setErrorMessage("Nao foi possivel obter o e-mail da conta Google.");
+        return;
+      }
+
+      setIsGoogleSubmitting(true);
+
+      try {
+        const response = await authService.googleLogin({
+          credential,
+          email: googleEmail,
+        });
+
+        if (response.setupPasswordToken) {
+          const params = new URLSearchParams({
+            setupPasswordToken: response.setupPasswordToken,
+            redirectTo: "/complete-profile",
+          });
+
+          router.replace(`/confirm-email?${params.toString()}`);
+          return;
+        }
+
+        await redirectAfterLogin(googleEmail);
+      } catch (error) {
+        setErrorMessage(getLoginErrorMessage(error));
+      } finally {
+        setIsGoogleSubmitting(false);
+      }
+    },
+    [redirectAfterLogin, router],
+  );
+
+  const initializeGoogleButton = useCallback(() => {
+    if (!GOOGLE_CLIENT_ID || !window.google || !googleButtonRef.current) {
+      return;
+    }
+
+    googleButtonRef.current.innerHTML = "";
+    window.google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      callback: (response) => void handleGoogleCredential(response.credential),
+    });
+    window.google.accounts.id.renderButton(googleButtonRef.current, {
+      theme: "outline",
+      size: "large",
+      type: "standard",
+      shape: "pill",
+      text: "continue_with",
+      width: 254,
+    });
+  }, [handleGoogleCredential]);
+
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setErrorMessage("");
@@ -83,14 +188,7 @@ export function LoginPageClient() {
       });
 
       await authService.login(payload);
-      const user = await userService.syncAuthUser(payload.email);
-
-      if (!isProfileComplete(user)) {
-        router.replace("/complete-profile");
-        return;
-      }
-
-      router.replace(redirectTo === "/complete-profile" ? "/home" : redirectTo);
+      await redirectAfterLogin(payload.email);
     } catch (error) {
       if (isUnconfirmedUserError(error)) {
         const parsedEmail = email.trim().toLowerCase();
@@ -108,6 +206,11 @@ export function LoginPageClient() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f4f6fb] px-4 py-10 text-[#0f172a] dark:bg-[#0f172a] dark:text-[#f8fafc]">
+      <Script
+        src="https://accounts.google.com/gsi/client"
+        strategy="afterInteractive"
+        onLoad={initializeGoogleButton}
+      />
       <section className="w-full max-w-[318px] rounded-[22px] border border-[#e2e8f0] bg-white px-8 py-10 shadow-sm dark:border-[#2d3c54] dark:bg-[#132238]">
         <Link
           href="/"
@@ -210,24 +313,25 @@ export function LoginPageClient() {
           <div className="h-px flex-1 bg-[#e2e8f0] dark:bg-[#2d3c54]" />
         </div>
 
-        <div className="grid grid-cols-2 gap-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="h-[38px] rounded-full border-[#cbd5e1] bg-white text-[10px] font-bold text-[#0f172a] hover:bg-[#f7f8fc] dark:border-[#2d3c54] dark:bg-[#132238] dark:text-[#f8fafc] dark:hover:bg-[#1d2d46]"
-          >
-            <span className="text-sm font-black text-[#2563eb]">G</span>
-            Google
-          </Button>
-
-          <Button
-            type="button"
-            variant="outline"
-            className="h-[38px] rounded-full border-[#cbd5e1] bg-white text-[10px] font-bold text-[#0f172a] hover:bg-[#f7f8fc] dark:border-[#2d3c54] dark:bg-[#132238] dark:text-[#f8fafc] dark:hover:bg-[#1d2d46]"
-          >
-            <span className="text-sm font-black">GH</span>
-            GitHub
-          </Button>
+        <div className="flex justify-center">
+          {GOOGLE_CLIENT_ID ? (
+            <div
+              ref={googleButtonRef}
+              className={isGoogleSubmitting ? "pointer-events-none opacity-60" : ""}
+            />
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              className="h-[38px] w-full rounded-full border-[#cbd5e1] bg-white text-[10px] font-bold text-[#0f172a] hover:bg-[#f7f8fc] dark:border-[#2d3c54] dark:bg-[#132238] dark:text-[#f8fafc] dark:hover:bg-[#1d2d46]"
+              onClick={() =>
+                setErrorMessage("NEXT_PUBLIC_GOOGLE_CLIENT_ID nao configurado.")
+              }
+            >
+              <span className="text-sm font-black text-[#2563eb]">G</span>
+              Google
+            </Button>
+          )}
         </div>
 
         <p className="mt-8 text-center text-[11px] text-[#64748b] dark:text-[#94a3b8]">

@@ -31,5 +31,11 @@ spec:
                   name: frontend-secret
                   key: NEXT_PUBLIC_API_URL
 
+            - name: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: frontend-secret
+                  key: NEXT_PUBLIC_GOOGLE_CLIENT_ID
+
           ports:
             - containerPort: 3000

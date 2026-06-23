@@ -185,9 +185,13 @@ function formatBirthDate(value: string | undefined, language: string) {
     return undefined;
   }
 
-  return new Intl.DateTimeFormat(language === "pt" ? "pt-BR" : "en-US", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(new Date(value));
+  const [year, month, day] = value.slice(0, 10).split("-");
+
+  if (!year || !month || !day) {
+    return value;
+  }
+
+  return language === "pt"
+    ? `${day}/${month}/${year}`
+    : `${month}/${day}/${year}`;
 }

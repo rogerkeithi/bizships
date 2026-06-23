@@ -22,6 +22,9 @@ export class UserPersistenceMapper {
       birthDate: user.birthDate,
       phone: user.phone?.getValue(),
       phoneVerifiedAt: user.phoneVerifiedAt,
+      googleId: user.googleId,
+      avatarUrl: user.avatarUrl,
+      authProvider: user.authProvider,
 
       passwordHash: user.passwordHash?.getValue(),
       deactivatedAt: user.deactivatedAt,
@@ -45,6 +48,9 @@ export class UserPersistenceMapper {
       birthDate: raw.birthDate,
       phone: raw.phone ? new Phone(raw.phone) : undefined,
       phoneVerifiedAt: raw.phoneVerifiedAt,
+      googleId: raw.googleId,
+      avatarUrl: raw.avatarUrl,
+      authProvider: raw.authProvider,
       passwordHash: raw.passwordHash
         ? new PasswordHash(raw.passwordHash)
         : undefined,

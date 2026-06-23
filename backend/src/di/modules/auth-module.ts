@@ -3,7 +3,9 @@ import { TYPES } from "../types";
 import { IRefreshTokenRepository } from "@src/domain/token/repositories/refresh-token-repository.interface";
 import { RefreshTokenRepository } from "@src/infra/database/mongo/repositories/refresh-token-repository";
 import { LoginUseCase } from "@src/application/auth/use-cases/login/login";
+import { GoogleLoginUseCase } from "@src/application/auth/use-cases/google-login/google-login";
 import LoginController from "@src/interfaces/http/controllers/auth/login.controller";
+import GoogleLoginController from "@src/interfaces/http/controllers/auth/google-login.controller";
 import { JwtService } from "@src/services/jwt/jwt.service";
 import { LogoutUseCase } from "@src/application/auth/use-cases/logout/logout";
 import { RefreshUseCase } from "@src/application/auth/use-cases/refresh/refresh";
@@ -21,11 +23,13 @@ export function registerAuthModule(container: Container) {
 
   //Use Cases
   container.bind<LoginUseCase>(LoginUseCase).toSelf();
+  container.bind<GoogleLoginUseCase>(GoogleLoginUseCase).toSelf();
   container.bind<LogoutUseCase>(LogoutUseCase).toSelf();
   container.bind<RefreshUseCase>(RefreshUseCase).toSelf();
 
   //Controllers
   container.bind<LoginController>(LoginController).toSelf();
+  container.bind<GoogleLoginController>(GoogleLoginController).toSelf();
   container.bind<LogoutController>(LogoutController).toSelf();
   container.bind<RefreshController>(RefreshController).toSelf();
 }

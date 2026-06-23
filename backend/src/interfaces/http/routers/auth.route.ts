@@ -4,11 +4,13 @@ import { asyncHandler } from "@src/shared/utils/async-handler";
 import LoginController from "../controllers/auth/login.controller";
 import LogoutController from "../controllers/auth/logout.controller";
 import RefreshController from "../controllers/auth/refresh.controller";
+import GoogleLoginController from "../controllers/auth/google-login.controller";
 
 const authRoute = express.Router();
 
 const controllers = {
   login: container.get(LoginController),
+  googleLogin: container.get(GoogleLoginController),
   logout: container.get(LogoutController),
   refresh: container.get(RefreshController),
 };
@@ -16,6 +18,10 @@ const controllers = {
 authRoute.post(
   "/login",
   asyncHandler(controllers.login.execute.bind(controllers.login)),
+);
+authRoute.post(
+  "/auth/google",
+  asyncHandler(controllers.googleLogin.execute.bind(controllers.googleLogin)),
 );
 authRoute.post(
   "/logout",

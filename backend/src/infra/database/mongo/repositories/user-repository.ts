@@ -21,6 +21,18 @@ export class UserRepository implements IUserRepository {
     );
   }
 
+  async findByGoogleId(googleId: string): Promise<User | undefined> {
+    const user = await UserModel.findOne({
+      googleId,
+    }).lean();
+
+    if (!user) {
+      return undefined;
+    }
+
+    return UserPersistenceMapper.toDomain(user);
+  }
+
   async findByEmail(email: string): Promise<User | undefined> {
     const user = await UserModel.findOne({
       email,

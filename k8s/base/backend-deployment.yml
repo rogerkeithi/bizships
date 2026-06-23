@@ -75,5 +75,11 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: JWT_REFRESH_SECRET
+
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: backend-secret
+                  key: GOOGLE_CLIENT_ID
           ports:
             - containerPort: 4000

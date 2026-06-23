@@ -1,19 +1,22 @@
 "use client";
 
-import { Bell, LogOut, Search, User } from "lucide-react";
+import { Bell, Laptop, LogOut, Moon, Search, Sun, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
-import { useTranslation } from "@/i18n";
+import { type Language, useI18n, useTranslation } from "@/i18n";
 import { Button } from "@/shared/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
+import { type Theme, useTheme } from "@/shared/providers/theme-provider";
 
 interface AuthenticatedNavbarProps {
   userName: string;
@@ -27,7 +30,12 @@ export function AuthenticatedNavbar({
   onLogout,
 }: AuthenticatedNavbarProps) {
   const { app } = useTranslation();
+  const { language, setLanguage } = useI18n();
+  const { theme, setTheme } = useTheme();
   const userInitial = userName.slice(0, 1).toUpperCase();
+  const handleThemeChange = (value: string) => setTheme(value as Theme);
+  const handleLanguageChange = (value: string) =>
+    setLanguage(value as Language);
 
   return (
     <header className="sticky top-0 z-40 border-b border-border bg-card/90 backdrop-blur">
@@ -88,6 +96,44 @@ export function AuthenticatedNavbar({
                   {app.navbar.viewProfile}
                 </Link>
               </DropdownMenuItem>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuLabel>{app.navbar.theme}</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                value={theme}
+                onValueChange={handleThemeChange}
+              >
+                <DropdownMenuRadioItem value="light">
+                  <Sun className="size-4" />
+                  {app.navbar.light}
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="dark">
+                  <Moon className="size-4" />
+                  {app.navbar.dark}
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="system">
+                  <Laptop className="size-4" />
+                  {app.navbar.system}
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+
+              <DropdownMenuSeparator />
+
+              <DropdownMenuLabel>{app.navbar.language}</DropdownMenuLabel>
+              <DropdownMenuRadioGroup
+                value={language}
+                onValueChange={handleLanguageChange}
+              >
+                <DropdownMenuRadioItem value="pt">
+                  {app.navbar.portuguese}
+                </DropdownMenuRadioItem>
+                <DropdownMenuRadioItem value="en">
+                  {app.navbar.english}
+                </DropdownMenuRadioItem>
+              </DropdownMenuRadioGroup>
+
+              <DropdownMenuSeparator />
 
               <DropdownMenuItem
                 variant="destructive"

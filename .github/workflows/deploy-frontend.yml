@@ -19,9 +19,11 @@ jobs:
           if [ "${GITHUB_REF_NAME}" = "main" ]; then
             echo "IMAGE_NAME=n0jiri/bizships-frontend-production" >> $GITHUB_ENV
             echo "NEXT_PUBLIC_API_URL=${{ secrets.PRODUCTION_NEXT_PUBLIC_API_URL }}" >> $GITHUB_ENV
+            echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.PRODUCTION_NEXT_PUBLIC_GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
           else
             echo "IMAGE_NAME=n0jiri/bizships-frontend-staging" >> $GITHUB_ENV
             echo "NEXT_PUBLIC_API_URL=${{ secrets.STAGING_NEXT_PUBLIC_API_URL }}" >> $GITHUB_ENV
+            echo "NEXT_PUBLIC_GOOGLE_CLIENT_ID=${{ secrets.STAGING_NEXT_PUBLIC_GOOGLE_CLIENT_ID }}" >> $GITHUB_ENV
           fi
 
       - name: Login Docker Hub
@@ -34,6 +36,7 @@ jobs:
         run: |
           docker build --no-cache \
             --build-arg NEXT_PUBLIC_API_URL="$NEXT_PUBLIC_API_URL" \
+            --build-arg NEXT_PUBLIC_GOOGLE_CLIENT_ID="$NEXT_PUBLIC_GOOGLE_CLIENT_ID" \
             -t $IMAGE_NAME:latest \
             -f ./frontend/Dockerfile \
             ./frontend
