@@ -17,15 +17,18 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { type Theme, useTheme } from "@/shared/providers/theme-provider";
+import { resolveAvatarUrl } from "@/shared/lib/resolve-avatar-url";
 
 interface AuthenticatedNavbarProps {
   userName: string;
+  avatarUrl?: string;
   isLoggingOut?: boolean;
   onLogout: () => void;
 }
 
 export function AuthenticatedNavbar({
   userName,
+  avatarUrl,
   isLoggingOut = false,
   onLogout,
 }: AuthenticatedNavbarProps) {
@@ -33,6 +36,7 @@ export function AuthenticatedNavbar({
   const { language, setLanguage } = useI18n();
   const { theme, setTheme } = useTheme();
   const userInitial = userName.slice(0, 1).toUpperCase();
+  const resolvedAvatarUrl = resolveAvatarUrl(avatarUrl);
   const handleThemeChange = (value: string) => setTheme(value as Theme);
   const handleLanguageChange = (value: string) =>
     setLanguage(value as Language);
@@ -71,10 +75,18 @@ export function AuthenticatedNavbar({
               <Button
                 type="button"
                 size="icon"
-                className="size-9 rounded-full bg-primary text-sm font-black uppercase text-primary-foreground hover:bg-primary/90"
+                className="size-9 overflow-hidden rounded-full bg-primary p-0 text-sm font-black uppercase text-primary-foreground hover:bg-primary/90"
                 aria-label="Abrir menu do perfil"
               >
-                {userInitial}
+                {resolvedAvatarUrl ? (
+                  <img
+                    src={resolvedAvatarUrl}
+                    alt={userName}
+                    className="size-full object-cover"
+                  />
+                ) : (
+                  userInitial
+                )}
               </Button>
             </DropdownMenuTrigger>
 

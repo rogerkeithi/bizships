@@ -200,6 +200,7 @@ export function HomePageClient() {
     <main className="min-h-screen bg-background text-foreground">
       <AuthenticatedNavbar
         userName={displayName}
+        avatarUrl={user?.avatarUrl}
         isLoggingOut={isLoggingOut}
         onLogout={handleLogout}
       />

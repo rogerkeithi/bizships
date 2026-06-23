@@ -23,8 +23,8 @@ import { useI18n, useTranslation } from "@/i18n";
 import { AuthenticatedNavbar } from "@/shared/components/AuthenticatedNavbar";
 import { Button } from "@/shared/components/ui/button";
 import { authTokenStorage, type AuthUser } from "@/shared/lib/auth-token-storage";
+import { resolveAvatarUrl } from "@/shared/lib/resolve-avatar-url";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 const MAX_SOURCE_IMAGE_BYTES = 8 * 1024 * 1024;
 const PROFILE_IMAGE_SIZE = 512;
 
@@ -191,6 +191,7 @@ export function ProfilePageClient() {
     <main className="min-h-screen bg-background text-foreground">
       <AuthenticatedNavbar
         userName={displayName}
+        avatarUrl={user?.avatarUrl}
         isLoggingOut={isLoggingOut}
         onLogout={handleLogout}
       />
@@ -457,18 +458,6 @@ function formatBirthDate(value: string | undefined, language: string) {
   return language === "pt"
     ? `${day}/${month}/${year}`
     : `${month}/${day}/${year}`;
-}
-
-function resolveAvatarUrl(avatarUrl?: string) {
-  if (!avatarUrl) {
-    return undefined;
-  }
-
-  if (avatarUrl.startsWith("http://") || avatarUrl.startsWith("https://")) {
-    return avatarUrl;
-  }
-
-  return `${API_BASE_URL}${avatarUrl}`;
 }
 
 function loadImage(imageSrc: string) {
