@@ -77,11 +77,11 @@ export class GoogleLoginUseCase {
       throw new UserDeactivatedError();
     }
 
-    if (user.googleId !== googleId || user.avatarUrl !== avatarUrl) {
+    if (user.googleId !== googleId || (!user.avatarUrl && avatarUrl)) {
       user.linkGoogleAccount({
         googleId,
         name,
-        avatarUrl,
+        avatarUrl: user.avatarUrl ?? avatarUrl,
         authProvider: "google",
       });
 

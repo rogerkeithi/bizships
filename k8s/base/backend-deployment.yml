@@ -81,5 +81,17 @@ spec:
                 secretKeyRef:
                   name: backend-secret
                   key: GOOGLE_CLIENT_ID
+
+            - name: UPLOADS_DIR
+              value: /app/uploads
           ports:
             - containerPort: 4000
+
+          volumeMounts:
+            - name: backend-uploads
+              mountPath: /app/uploads
+
+      volumes:
+        - name: backend-uploads
+          persistentVolumeClaim:
+            claimName: backend-uploads-pvc

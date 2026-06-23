@@ -50,6 +50,19 @@ export const appPt = {
     status: "Status",
     confirmed: "Conta confirmada",
     pending: "Pendente",
+    changePhoto: "Alterar foto de perfil",
+    cropTitle: "Ajustar foto",
+    cropDescription:
+      "Enquadre a imagem no formato do avatar antes de salvar.",
+    zoom: "Zoom",
+    positionX: "Posicao horizontal",
+    positionY: "Posicao vertical",
+    savePhoto: "Salvar foto",
+    cancelPhoto: "Cancelar",
+    invalidImage: "Envie uma imagem JPG, PNG ou WebP.",
+    imageTooLarge: "A imagem original deve ter no maximo 8 MB.",
+    imageReadError: "Nao foi possivel ler a imagem selecionada.",
+    uploadError: "Nao foi possivel salvar a foto. Tente novamente.",
   },
 };
 

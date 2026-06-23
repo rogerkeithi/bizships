@@ -17,8 +17,14 @@ export interface UserProfile {
   socialName?: string;
   birthDate?: string;
   phone?: string;
+  avatarUrl?: string;
   status: boolean;
   isConfirmed: boolean;
+}
+
+export interface UploadProfilePicturePayload {
+  imageBase64: string;
+  mimeType: "image/jpeg" | "image/png" | "image/webp";
 }
 
 export interface FinishRegistrationPayload {
@@ -61,6 +67,7 @@ export const toAuthUser = (profile: UserProfile): AuthUser => {
     socialName: profile.socialName,
     birthDate: profile.birthDate,
     phone: profile.phone,
+    avatarUrl: profile.avatarUrl,
     isConfirmed: profile.isConfirmed,
   };
 };
@@ -87,5 +94,13 @@ export const userService = {
 
   async finishRegistration(payload: FinishRegistrationPayload) {
     await apiClient.post("/users/finish-registration", payload);
+  },
+
+  async uploadProfilePicture(payload: UploadProfilePicturePayload) {
+    const { data } = await apiClient.post<
+      ApiResponse<{ avatarUrl: string }>
+    >("/users/profile-picture", payload);
+
+    return data.data;
   },
 };

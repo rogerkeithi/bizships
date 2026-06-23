@@ -7,6 +7,7 @@ export interface FindUserByEmailRes {
   birthDate?: Date;
   phone?: string;
   phoneVerifiedAt?: Date;
+  avatarUrl?: string;
   status: boolean;
   isConfirmed: boolean;
 }

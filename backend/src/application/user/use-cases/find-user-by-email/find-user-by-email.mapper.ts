@@ -12,6 +12,7 @@ export class FindUserByEmailMapper {
       birthDate: user.birthDate,
       phone: user.phone?.getValue(),
       phoneVerifiedAt: user.phoneVerifiedAt,
+      avatarUrl: user.avatarUrl,
       status: user.status,
       isConfirmed: user.isConfirmed,
     };

@@ -1,4 +1,5 @@
 resources:
+  - backend-uploads-pvc.yml
   - backend-deployment.yml
   - backend-service.yml
   - frontend-deployment.yml

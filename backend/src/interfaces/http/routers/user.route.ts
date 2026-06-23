@@ -10,6 +10,7 @@ import VerifySetupPasswordCodeController from "../controllers/user/verify-setup-
 import SendSetupPasswordCodeController from "../controllers/user/send-setup-password-code.controller";
 import VerifySetupPasswordTokenController from "../controllers/user/verify-setup-password-token.controller";
 import FinishRegistrationController from "../controllers/user/finish-registration.controller";
+import UpdateProfilePictureController from "../controllers/user/update-profile-picture.controller";
 
 const userRoute = express.Router();
 
@@ -23,6 +24,7 @@ const controllers = {
   verifySetupPasswordToken: container.get(VerifySetupPasswordTokenController),
   verifySetupPasswordCode: container.get(VerifySetupPasswordCodeController),
   sendSetupPasswordCode: container.get(SendSetupPasswordCodeController),
+  updateProfilePicture: container.get(UpdateProfilePictureController),
 };
 
 userRoute.post(
@@ -41,6 +43,14 @@ userRoute.post(
   "/users/finish-registration",
   asyncHandler(
     controllers.finishRegistration.execute.bind(controllers.finishRegistration),
+  ),
+);
+userRoute.post(
+  "/users/profile-picture",
+  asyncHandler(
+    controllers.updateProfilePicture.execute.bind(
+      controllers.updateProfilePicture,
+    ),
   ),
 );
 userRoute.post(

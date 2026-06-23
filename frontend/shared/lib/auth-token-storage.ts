@@ -17,6 +17,7 @@ export interface AuthUser {
   socialName?: string;
   birthDate?: string;
   phone?: string;
+  avatarUrl?: string;
   isConfirmed?: boolean;
 }
 

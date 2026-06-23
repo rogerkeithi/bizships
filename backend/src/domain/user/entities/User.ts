@@ -113,6 +113,10 @@ export class User {
     }
   }
 
+  public setAvatarUrl(avatarUrl: string) {
+    this._avatarUrl = avatarUrl;
+  }
+
   get email(): Email {
     return this._email;
   }

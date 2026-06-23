@@ -24,6 +24,8 @@ import { FinishRegistrationUseCase } from "@src/application/user/use-cases/finis
 import { VerifySetupPasswordTokenUseCase } from "@src/application/user/use-cases/verify-setup-password-token/verify-setup-password-token";
 import FinishRegistrationController from "@src/interfaces/http/controllers/user/finish-registration.controller";
 import VerifySetupPasswordTokenController from "@src/interfaces/http/controllers/user/verify-setup-password-token.controller";
+import { UpdateProfilePictureUseCase } from "@src/application/user/use-cases/update-profile-picture/update-profile-picture";
+import UpdateProfilePictureController from "@src/interfaces/http/controllers/user/update-profile-picture.controller";
 
 export function registerUserModule(container: Container) {
   //Repositories
@@ -49,6 +51,9 @@ export function registerUserModule(container: Container) {
   container
     .bind<VerifySetupPasswordTokenUseCase>(VerifySetupPasswordTokenUseCase)
     .toSelf();
+  container
+    .bind<UpdateProfilePictureUseCase>(UpdateProfilePictureUseCase)
+    .toSelf();
 
   //Controllers
   container.bind<CreateUserController>(CreateUserController).toSelf();
@@ -71,5 +76,8 @@ export function registerUserModule(container: Container) {
     .bind<VerifySetupPasswordTokenController>(
       VerifySetupPasswordTokenController,
     )
+    .toSelf();
+  container
+    .bind<UpdateProfilePictureController>(UpdateProfilePictureController)
     .toSelf();
 }

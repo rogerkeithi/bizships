@@ -50,6 +50,18 @@ const appEn = {
     status: "Status",
     confirmed: "Confirmed account",
     pending: "Pending",
+    changePhoto: "Change profile photo",
+    cropTitle: "Adjust photo",
+    cropDescription: "Frame the image in the avatar shape before saving.",
+    zoom: "Zoom",
+    positionX: "Horizontal position",
+    positionY: "Vertical position",
+    savePhoto: "Save photo",
+    cancelPhoto: "Cancel",
+    invalidImage: "Upload a JPG, PNG, or WebP image.",
+    imageTooLarge: "The original image must be at most 8 MB.",
+    imageReadError: "Could not read the selected image.",
+    uploadError: "Could not save the photo. Try again.",
   },
 };
 

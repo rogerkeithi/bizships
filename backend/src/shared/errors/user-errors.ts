@@ -101,3 +101,13 @@ export class UserAlreadySetPassword extends AppError {
     super(ErrorCode.USER_ALREADY_SET_PASSWORD, 400);
   }
 }
+export class InvalidProfileImageError extends AppError {
+  constructor() {
+    super(ErrorCode.INVALID_PROFILE_IMAGE, 400);
+  }
+}
+export class ProfileImageTooLargeError extends AppError {
+  constructor() {
+    super(ErrorCode.PROFILE_IMAGE_TOO_LARGE, 413);
+  }
+}
